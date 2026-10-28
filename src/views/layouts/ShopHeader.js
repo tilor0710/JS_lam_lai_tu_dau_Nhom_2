@@ -1,30 +1,39 @@
+import shoppingBagIcon from "lucide-static/icons/shopping-bag.svg";
+import arrowLeftIcon from "lucide-static/icons/arrow-left.svg";
+import userIcon from "lucide-static/icons/user.svg";
+
 export class ShopHeader {
   static getTemplate() {
-    return /*html*/ `
-      <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <!-- Logo Shop -->
-          <a href="#/shop" class="font-extrabold text-2xl text-brand-blue tracking-tight">
-            QuickShip <span class="text-gray-500 font-medium text-lg">| Shop</span>
-          </a>
+    return `
+      <header class="bg-white border-b-2 border-[#f59e0b] sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 h-18 flex items-center justify-between">
           
-          <!-- Navigation Shop -->
-          <nav class="hidden md:flex items-center gap-6">
-            <a href="#/" class="text-sm font-bold text-gray-500 hover:text-brand-strong transition">← Về trang Vận chuyển</a>
-            <a href="#/shop" class="text-sm font-bold text-brand-blue transition">Tất cả sản phẩm</a>
-          </nav>
-
-          <!-- Giỏ hàng & Đăng nhập -->
           <div class="flex items-center gap-4">
-            <a href="#/cart" class="flex items-center gap-1.5 text-gray-700 hover:text-brand-blue transition">
-              <!-- Icon Cart SVG tạm -->
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-              <span class="text-sm font-bold">Giỏ hàng (0)</span>
+            <a href="#/shop" class="font-['Oswald'] font-bold text-2xl uppercase tracking-wider text-gray-900 flex items-center gap-2">
+              <span class="bg-[#f59e0b] text-gray-900 px-2 py-0.5 text-lg font-extrabold">SHOP</span>
+              QuickShip Store
             </a>
-            <a href="#/auth" class="bg-brand-blue text-white px-5 py-2 rounded-lg text-sm font-bold transition hover:opacity-90">
-              Đăng nhập
+            <a href="#/" class="hidden sm:flex items-center gap-1 text-xs font-bold uppercase text-gray-500 hover:text-[#b91c1c] ml-4 transition border-l border-gray-300 pl-4">
+              <img src="${arrowLeftIcon}" class="w-3.5 h-3.5" alt="" />
+              Về trang vận chuyển
             </a>
           </div>
+
+          <div class="flex items-center gap-3">
+            <!-- Nút giỏ hàng góc vuông -->
+            <a href="#/cart" class="border border-gray-300 px-4 py-2 flex items-center gap-2 hover:border-[#b91c1c] transition text-sm font-bold text-gray-800">
+              <img src="${shoppingBagIcon}" class="w-4 h-4 text-gray-700" alt="" />
+              <span>Giỏ hàng</span>
+              <span class="bg-[#b91c1c] text-white text-xs px-1.5 py-0.2 font-mono">0</span>
+            </a>
+
+            <!-- Nút Auth -->
+            <a href="#/auth" class="bg-[#b91c1c] hover:bg-[#991b1b] text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5">
+              <img src="${userIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
+              <span>Tài khoản</span>
+            </a>
+          </div>
+
         </div>
       </header>
     `;

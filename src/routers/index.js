@@ -1,6 +1,7 @@
 import Navigo from "navigo";
 import { HomeController } from "../controllers/home/HomeController.js";
 import { ShopController } from "../controllers/shop/ShopController.js";
+import { LocateController } from "../controllers/locate/LocateController.js"; // <-- THÊM DÒNG NÀY
 
 export const router = new Navigo("/", { hash: true });
 
@@ -13,6 +14,10 @@ export const initRouter = () => {
     .on("/shop", () => {
       const shop = new ShopController();
       shop.init();
+    })
+    .on("/locate-us", () => {
+      const locateCtrl = new LocateController();
+      locateCtrl.init();
     })
     .notFound(() => {
       const content = document.querySelector("#app-content");

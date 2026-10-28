@@ -1,0 +1,41 @@
+# 1. Thư mục cài đặt thư viện (Bắt buộc bỏ qua)
+node_modules/
+.pnp
+.pnp.js
+
+# 2. Thư mục build/đóng gói của Vite (Bắt buộc bỏ qua)
+dist/
+dist-ssr/
+*.local
+
+# 3. File log lỗi của hệ thống
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 4. File môi trường / bảo mật (nếu sau này có tạo)
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# 5. Cấu hình riêng của IDE / Trình soạn thảo
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 6. File rác do hệ điều hành tự sinh ra
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Lưu ý: Tuyệt đối KHÔNG bỏ qua db.json vì cần giữ data test cho đồ án!
