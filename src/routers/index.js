@@ -1,27 +1,47 @@
 import Navigo from "navigo";
 import { HomeController } from "../controllers/home/HomeController.js";
+import { LocateController } from "../controllers/locate/LocateController.js";
 import { ShopController } from "../controllers/shop/ShopController.js";
+import { CalculateRatesController } from "../controllers/calculate/CalculateRatesController.js";
 
 export const router = new Navigo("/", { hash: true });
 
 export const initRouter = () => {
   router
+    // Trang chủ
     .on("/", () => {
-      const home = new HomeController();
-      home.init();
+      const homeCtrl = new HomeController();
+      homeCtrl.init();
     })
+    // Mạng lưới bưu cục (Bản đồ Leaflet)
+    .on("/locate-us", () => {
+      const locateCtrl = new LocateController();
+      locateCtrl.init();
+    })
+    .on("/calculate-rates", () => {
+      // <-- THÊM ROUTE NÀY
+      const calcCtrl = new CalculateRatesController();
+      calcCtrl.init();
+    })
+    // Cửa hàng vật tư đóng gói
     .on("/shop", () => {
-      const shop = new ShopController();
-      shop.init();
+      const shopCtrl = new ShopController();
+      shopCtrl.init();
     })
+    // Trang 404 góc cạnh
     .notFound(() => {
       const content = document.querySelector("#app-content");
       if (content) {
-        content.innerHTML = /*html*/ `
-          <div class="text-center py-20">
-            <h1 class="text-4xl font-extrabold text-red-500">404</h1>
-            <p class="text-gray-500 mt-2">Trang không tồn tại!</p>
-            <a href="#/" class="inline-block mt-4 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm">Quay về trang chủ</a>
+        content.innerHTML = `
+          <div class="max-w-7xl mx-auto px-4 py-24 text-center">
+            <div class="inline-block p-8 bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_#b91c1c] rounded-none">
+              <h1 class="font-['Oswald'] text-5xl font-extrabold text-[#b91c1c] tracking-wider">404 ERROR</h1>
+              <p class="font-['Oswald'] text-lg uppercase font-bold text-gray-900 mt-2">KHÔNG TÌM THẤY TRANG YÊU CẦU</p>
+              <p class="text-xs text-gray-600 mt-1 max-w-sm">Đường dẫn bạn truy cập có thể đã thay đổi hoặc không tồn tại trong hệ thống.</p>
+              <a href="#/" class="inline-block mt-6 px-6 py-2.5 bg-[#b91c1c] hover:bg-[#991b1b] text-white font-['Oswald'] text-xs font-bold uppercase tracking-wider transition rounded-none">
+                Quay về trang chủ
+              </a>
+            </div>
           </div>
         `;
       }
