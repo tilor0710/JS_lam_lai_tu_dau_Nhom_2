@@ -24,7 +24,7 @@ export class ShopHeader {
             <a href="#/cart" class="border border-gray-300 px-4 py-2 flex items-center gap-2 hover:border-[#b91c1c] transition text-sm font-bold text-gray-800">
               <img src="${shoppingBagIcon}" class="w-4 h-4 text-gray-700" alt="" />
               <span>Giỏ hàng</span>
-              <span class="bg-[#b91c1c] text-white text-xs px-1.5 py-0.2 font-mono">0</span>
+              <span data-role="cart-count" class="bg-[#b91c1c] text-white text-xs px-1.5 py-0.2 font-mono">0</span>
             </a>
 
             <!-- Nút Auth -->

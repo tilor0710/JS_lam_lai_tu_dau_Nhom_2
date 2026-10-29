@@ -1,6 +1,7 @@
 import { Header } from "./Header.js";
 import { ShopHeader } from "./ShopHeader.js";
 import { Footer } from "./Footer.js";
+import { cartService } from "../../services/CartService.js";
 
 export class Layout {
   static render(isShop = false) {
@@ -17,8 +18,20 @@ export class Layout {
       footerElement.innerHTML = Footer.getTemplate();
     }
 
-    this.run();
+    this.unsubscribeCart?.();
+    this.unsubscribeCart = cartService.subscribe((items) => {
+      this.updateCartCount(items);
+    });
+    this.updateCartCount(cartService.getItems());
   }
 
-  static run() {}
+  static updateCartCount(items) {
+    const quantity = items.reduce((total, item) => total + item.quantity, 0);
+    document.querySelectorAll('[data-role="cart-count"]').forEach((badge) => {
+      badge.textContent = String(quantity);
+      badge.setAttribute("aria-label", `${quantity} sản phẩm trong giỏ hàng`);
+    });
+  }
+
+  static unsubscribeCart = null;
 }

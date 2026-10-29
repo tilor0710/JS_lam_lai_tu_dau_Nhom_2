@@ -51,10 +51,13 @@ export class CartView extends BaseView {
 
         ${
           error
-            ? `<div role="alert" class="bg-red-50 border-2 border-red-700 p-6 text-center text-sm text-red-800">${escapeHTML(error)}</div>`
-            : items.length === 0
-              ? this.#getEmptyTemplate()
-              : this.#getCartTemplate(items, totalQuantity, totalPrice)
+            ? `<div role="alert" class="bg-red-50 border-2 border-red-700 p-4 mb-6 text-sm text-red-800">${escapeHTML(error)}</div>`
+            : ""
+        }
+        ${
+          items.length === 0
+            ? this.#getEmptyTemplate()
+            : this.#getCartTemplate(items, totalQuantity, totalPrice)
         }
 
       </section>
@@ -157,6 +160,7 @@ export class CartView extends BaseView {
               <p class="text-xs font-mono text-gray-500 mt-1">
                 Đơn giá: ${CartService.formatPrice(item.price)}
               </p>
+              <p class="text-xs text-gray-500 mt-1">Tồn kho: ${item.stock}</p>
             </div>
 
             <button
@@ -185,7 +189,7 @@ export class CartView extends BaseView {
               <input
                 type="number"
                 min="1"
-                max="99"
+                max="${Math.min(item.stock, 99)}"
                 value="${item.quantity}"
                 data-action="quantity"
                 data-id="${item.id}"
@@ -205,7 +209,9 @@ export class CartView extends BaseView {
 
             <!-- Thành tiền -->
             <span class="font-['Oswald'] text-lg sm:text-xl font-bold text-[#b91c1c] tracking-wide">
-              ${lineTotal}
+              <span data-role="line-total">
+                ${lineTotal}
+              </span>
             </span>
           </div>
         </div>
@@ -265,5 +271,30 @@ export class CartView extends BaseView {
           this.onClear?.();
         }
       });
+  }
+
+  updateItem(item, totalQuantity, totalPrice) {
+    const root = this.container;
+    const row = root?.querySelector(`[data-item-id="${item.id}"]`);
+    if (!row) return false;
+
+    const quantity = row.querySelector('input[data-action="quantity"]');
+    const lineTotal = row.querySelector('[data-role="line-total"]');
+    const totalQuantityElement = root.querySelector(
+      '[data-role="total-quantity"]',
+    );
+    const totalPriceElement = root.querySelector('[data-role="total-price"]');
+
+    if (!quantity || !lineTotal || !totalQuantityElement || !totalPriceElement) {
+      return false;
+    }
+
+    quantity.value = String(item.quantity);
+    quantity.max = String(Math.min(item.stock, 99));
+    lineTotal.textContent = CartService.formatPrice(item.price * item.quantity);
+    totalQuantityElement.textContent = String(totalQuantity);
+    totalPriceElement.textContent = CartService.formatPrice(totalPrice);
+
+    return true;
   }
 }

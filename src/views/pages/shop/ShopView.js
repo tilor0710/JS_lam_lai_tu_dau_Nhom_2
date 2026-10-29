@@ -165,6 +165,7 @@ export class ShopView extends BaseView {
 
     addButtons.forEach((btn) => {
       btn.addEventListener("click", async (e) => {
+        e.preventDefault();
         const targetBtn = e.currentTarget;
         const productData = {
           id: targetBtn.dataset.productId,

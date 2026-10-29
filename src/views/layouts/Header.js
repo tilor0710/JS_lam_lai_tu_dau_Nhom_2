@@ -1,6 +1,7 @@
 import truckIcon from "lucide-static/icons/truck.svg";
 import userIcon from "lucide-static/icons/user.svg";
 import menuIcon from "lucide-static/icons/menu.svg";
+import shoppingCartIcon from "lucide-static/icons/shopping-cart.svg";
 
 export class Header {
   static getTemplate() {
@@ -30,6 +31,10 @@ export class Header {
 
           <!-- Nút Đăng nhập & Nút Menu Mobile -->
           <div class="flex items-center gap-2">
+            <a href="#/cart" aria-label="Giỏ hàng" class="relative p-2 border-2 border-gray-900 hover:border-[#b91c1c] transition">
+              <img src="${shoppingCartIcon}" class="w-5 h-5" alt="" />
+              <span data-role="cart-count" class="absolute -top-2 -right-2 min-w-5 h-5 px-1 bg-[#b91c1c] text-white text-[10px] font-bold flex items-center justify-center">0</span>
+            </a>
             <a href="#/auth" class="bg-[#b91c1c] hover:bg-[#991b1b] text-white px-3.5 sm:px-5 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider border-b-2 border-[#f59e0b] flex items-center gap-1.5 transition">
               <img src="${userIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
               <span class="hidden xs:inline">Đăng nhập</span>

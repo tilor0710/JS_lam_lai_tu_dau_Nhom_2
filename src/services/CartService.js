@@ -12,6 +12,7 @@ export class CartService extends BaseService {
     this.listeners = new Set();
     this.items = [];
     this.products = new Map();
+    this.writeQueue = Promise.resolve();
   }
 
   async load(products) {
@@ -19,42 +20,57 @@ export class CartService extends BaseService {
       throw new Error("Danh sách sản phẩm không hợp lệ, không thể tải giỏ hàng.");
     }
 
-    this.products = new Map(products.map((product) => [Number(product.id), product]));
+    return this.#enqueue(async () => {
+      this.products = new Map(
+        products.map((product) => [Number(product.id), product]),
+      );
 
-    const cart = await this.model.getDefaultCart();
-    if (!cart || !Array.isArray(cart.items)) {
-      throw new Error("Dữ liệu giỏ hàng trong db.json không hợp lệ.");
-    }
+      const cart = await this.model.getDefaultCart();
+      if (!cart || !Array.isArray(cart.items)) {
+        throw new Error("Dữ liệu giỏ hàng trong db.json không hợp lệ.");
+      }
 
-    const items = cart.items
-      .map((item) => {
+      const quantities = new Map();
+      cart.items.forEach((item) => {
         const id = Number(item?.productId);
         const quantity = Math.floor(Number(item?.quantity));
         const product = this.products.get(id);
+        const maxQuantity = product
+          ? Math.min(this.#maxQuantity(product), MAX_QTY_PER_ITEM)
+          : 0;
 
         if (
+          !Number.isInteger(id) ||
           !product ||
           !Number.isFinite(quantity) ||
-          quantity <= 0
+          quantity <= 0 ||
+          !maxQuantity
         ) {
-          return null;
+          return;
         }
 
-        return this.#withProduct(product, Math.min(quantity, MAX_QTY_PER_ITEM));
-      })
-      .filter(Boolean);
+        quantities.set(
+          id,
+          Math.min((quantities.get(id) ?? 0) + quantity, maxQuantity),
+        );
+      });
 
-    const normalized = items.map(({ id, quantity }) => ({
-      productId: id,
-      quantity,
-    }));
-    if (JSON.stringify(normalized) !== JSON.stringify(cart.items)) {
-      await this.model.updateItems(normalized);
-    }
+      const items = Array.from(quantities, ([id, quantity]) =>
+        this.#withProduct(this.products.get(id), quantity),
+      );
 
-    this.items = items;
-    this.#notify();
-    return this.getItems();
+      const normalized = items.map(({ id, quantity }) => ({
+        productId: id,
+        quantity,
+      }));
+      if (JSON.stringify(normalized) !== JSON.stringify(cart.items)) {
+        await this.model.updateItems(normalized);
+      }
+
+      this.items = items;
+      this.#notify();
+      return this.getItems();
+    });
   }
 
   #withProduct(product, quantity) {
@@ -63,8 +79,22 @@ export class CartService extends BaseService {
       name: String(product.name ?? ""),
       price: Number(product.price),
       image: String(product.image ?? ""),
+      stock: this.#maxQuantity(product),
       quantity,
     };
+  }
+
+  #maxQuantity(product) {
+    const stock = Number(product?.stock);
+    return Number.isFinite(stock)
+      ? Math.max(0, Math.floor(stock))
+      : MAX_QTY_PER_ITEM;
+  }
+
+  #enqueue(operation) {
+    const result = this.writeQueue.then(operation);
+    this.writeQueue = result.catch(() => {});
+    return result;
   }
 
   async #save(items) {
@@ -95,62 +125,105 @@ export class CartService extends BaseService {
 
   async addItem(product, quantity = 1) {
     const id = Number(product?.id);
-    const price = Number(product?.price);
-    const qty = Math.floor(Number(quantity));
+    const qty = Number(quantity);
 
-    if (!Number.isFinite(id) || !Number.isFinite(price) || price < 0) {
+    if (!Number.isInteger(id) || id <= 0) {
       throw new Error("Sản phẩm không hợp lệ, không thể thêm vào giỏ hàng!");
     }
-    if (!Number.isFinite(qty) || qty <= 0) {
+    if (!Number.isInteger(qty) || qty <= 0) {
       throw new Error("Số lượng phải là số nguyên lớn hơn 0!");
     }
 
-    const currentProduct = this.products.get(id) ?? product;
-    const existing = this.items.find((item) => item.id === id);
-    const nextItems = existing
-      ? this.items.map((item) =>
-          item.id === id
-            ? this.#withProduct(
-                currentProduct,
-                Math.min(item.quantity + qty, MAX_QTY_PER_ITEM),
-              )
-            : item,
-        )
-      : [
-          ...this.items,
-          this.#withProduct(currentProduct, Math.min(qty, MAX_QTY_PER_ITEM)),
-        ];
+    return this.#enqueue(async () => {
+      const currentProduct = this.products.get(id);
+      if (!currentProduct) {
+        throw new Error("Không tìm thấy sản phẩm. Vui lòng tải lại cửa hàng.");
+      }
 
-    await this.#save(nextItems);
+      const maxQuantity = Math.min(
+        this.#maxQuantity(currentProduct),
+        MAX_QTY_PER_ITEM,
+      );
+      if (maxQuantity === 0) {
+        throw new Error("Sản phẩm hiện đã hết hàng.");
+      }
+
+      const existing = this.items.find((item) => item.id === id);
+      const nextQuantity = (existing?.quantity ?? 0) + qty;
+      if (nextQuantity > maxQuantity) {
+        throw new Error(`Số lượng tối đa của sản phẩm này là ${maxQuantity}.`);
+      }
+
+      const nextItems = existing
+        ? this.items.map((item) =>
+            item.id === id
+              ? this.#withProduct(currentProduct, nextQuantity)
+              : item,
+          )
+        : [...this.items, this.#withProduct(currentProduct, qty)];
+
+      await this.#save(nextItems);
+    });
   }
 
   async updateQuantity(id, quantity) {
     const numId = Number(id);
-    const qty = Math.floor(Number(quantity));
-    if (!Number.isFinite(qty)) return;
+    const qty = Number(quantity);
+    if (!Number.isInteger(numId) || numId <= 0) {
+      throw new Error("Sản phẩm không hợp lệ.");
+    }
+    if (!Number.isInteger(qty)) {
+      throw new Error("Số lượng phải là số nguyên.");
+    }
 
     if (qty <= 0) {
       await this.removeItem(numId);
       return;
     }
 
-    const nextItems = this.items.map((item) =>
-      item.id === numId
-        ? { ...item, quantity: Math.min(qty, MAX_QTY_PER_ITEM) }
-        : item,
-    );
-    if (nextItems.some((item, index) => item.quantity !== this.items[index]?.quantity)) {
-      await this.#save(nextItems);
-    }
+    return this.#enqueue(async () => {
+      const existing = this.items.find((item) => item.id === numId);
+      if (!existing) return;
+
+      const product = this.products.get(numId);
+      const maxQuantity = Math.min(
+        product ? this.#maxQuantity(product) : existing.stock,
+        MAX_QTY_PER_ITEM,
+      );
+      if (maxQuantity === 0) {
+        throw new Error("Sản phẩm hiện đã hết hàng.");
+      }
+
+      const nextQuantity = Math.min(qty, maxQuantity);
+      if (nextQuantity === existing.quantity) return;
+
+      await this.#save(
+        this.items.map((item) =>
+          item.id === numId
+            ? this.#withProduct(product ?? item, nextQuantity)
+            : item,
+        ),
+      );
+    });
   }
 
   async removeItem(id) {
     const numId = Number(id);
-    await this.#save(this.items.filter((item) => item.id !== numId));
+    if (!Number.isInteger(numId) || numId <= 0) {
+      throw new Error("Sản phẩm không hợp lệ.");
+    }
+    return this.#enqueue(async () => {
+      const nextItems = this.items.filter((item) => item.id !== numId);
+      if (nextItems.length !== this.items.length) {
+        await this.#save(nextItems);
+      }
+    });
   }
 
   async clear() {
-    await this.#save([]);
+    return this.#enqueue(async () => {
+      if (this.items.length) await this.#save([]);
+    });
   }
 
   getItems() {

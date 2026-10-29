@@ -18,15 +18,26 @@ export class ProductService extends BaseService {
         name: String(product?.name ?? ""),
         price: Number(product?.price),
         image: String(product?.image ?? ""),
+        stock:
+          product?.stock === undefined
+            ? undefined
+            : Number(product.stock),
       };
 
       if (
-        !Number.isFinite(normalized.id) ||
+        !Number.isInteger(normalized.id) ||
+        normalized.id <= 0 ||
         !normalized.name ||
         !Number.isFinite(normalized.price) ||
-        normalized.price < 0
+        normalized.price < 0 ||
+        (normalized.stock !== undefined &&
+          (!Number.isFinite(normalized.stock) || normalized.stock < 0))
       ) {
         throw new Error(`Dữ liệu sản phẩm không hợp lệ (id: ${product?.id}).`);
+      }
+
+      if (normalized.stock !== undefined) {
+        normalized.stock = Math.floor(normalized.stock);
       }
 
       return normalized;
