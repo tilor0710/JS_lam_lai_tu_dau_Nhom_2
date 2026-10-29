@@ -1,7 +1,8 @@
 import Navigo from "navigo";
+import { RegisterController } from "../controllers/auth/RegisterController.js";
 import { HomeController } from "../controllers/home/HomeController.js";
 import { ShopController } from "../controllers/shop/ShopController.js";
-
+import { LoginController } from "../controllers/auth/LoginController.js";
 export const router = new Navigo("/", { hash: true });
 
 export const initRouter = () => {
@@ -13,6 +14,14 @@ export const initRouter = () => {
     .on("/shop", () => {
       const shop = new ShopController();
       shop.init();
+    })
+    .on("/login", () => {
+    const login = new LoginController();
+    login.init();
+    })
+    .on("/register", () => {
+    const register = new RegisterController();
+    register.init();
     })
     .notFound(() => {
       const content = document.querySelector("#app-content");
