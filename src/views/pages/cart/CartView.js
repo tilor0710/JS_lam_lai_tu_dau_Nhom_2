@@ -26,7 +26,12 @@ export class CartView extends BaseView {
     this.onClear = null; // () => void
   }
 
-  getTemplate({ items = [], totalQuantity = 0, totalPrice = 0 } = {}) {
+  getTemplate({
+    items = [],
+    totalQuantity = 0,
+    totalPrice = 0,
+    error = "",
+  } = {}) {
     return `
       <section class="max-w-7xl mx-auto px-4 py-8">
 
@@ -44,7 +49,13 @@ export class CartView extends BaseView {
           </a>
         </div>
 
-        ${items.length === 0 ? this.#getEmptyTemplate() : this.#getCartTemplate(items, totalQuantity, totalPrice)}
+        ${
+          error
+            ? `<div role="alert" class="bg-red-50 border-2 border-red-700 p-6 text-center text-sm text-red-800">${escapeHTML(error)}</div>`
+            : items.length === 0
+              ? this.#getEmptyTemplate()
+              : this.#getCartTemplate(items, totalQuantity, totalPrice)
+        }
 
       </section>
     `;

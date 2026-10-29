@@ -1,19 +1,19 @@
 import { BaseController } from "../../base/baseController.js";
-import { CartView } from "../../views/cart/CartView.js";
+import { CartView } from "../../views/pages/cart/cartView.js";
 import { cartService } from "../../services/CartService.js";
+import { ProductModel } from "../../models/ProductModel.js";
+import { ProductService } from "../../services/ProductService.js";
 import { Layout } from "../../views/layouts/Layout.js";
 
 export class CartController extends BaseController {
   constructor() {
-    // Giỏ hàng dùng chung 1 service (singleton) cho toàn ứng dụng.
     super(cartService, new CartView());
+    this.productService = new ProductService(new ProductModel());
   }
 
   async init() {
-    // 1. Header của khu vực Shop (có badge giỏ hàng) và Footer
     Layout.render(true);
 
-    // 2. Đăng ký xử lý sự kiện từ View
     this.view.onUpdateQuantity = (id, quantity) => {
       this.service.updateQuantity(id, quantity);
       this.refresh();
@@ -29,15 +29,18 @@ export class CartController extends BaseController {
       this.refresh();
     };
 
-    // 3. Vẽ giỏ hàng lần đầu
-    this.refresh();
+    try {
+      const products = await this.productService.getProducts();
+      this.service.syncProducts(products);
+      this.refresh();
+    } catch (error) {
+      console.error("[CartController Error]: Không tải được sản phẩm:", error);
+      this.view.render({
+        error: "Không tải được dữ liệu sản phẩm. Vui lòng thử lại sau.",
+      });
+    }
   }
 
-  /**
-   * Vẽ lại trang theo trạng thái giỏ hàng hiện tại.
-   * (Gọi trực tiếp thay vì subscribe, để controller của lần vào trang cũ
-   * không còn "sống" và vẽ đè lên các trang khác.)
-   */
   refresh() {
     this.view.render({
       items: this.service.getItems(),

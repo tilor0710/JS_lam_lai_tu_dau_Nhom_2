@@ -1,25 +1,33 @@
 import { BaseController } from "../../base/baseController.js";
 import { ShopView } from "../../views/pages/shop/ShopView.js";
 import { Layout } from "../../views/layouts/Layout.js";
+import { ProductModel } from "../../models/ProductModel.js";
+import { ProductService } from "../../services/ProductService.js";
+import { cartService } from "../../services/CartService.js";
 
 export class ShopController extends BaseController {
   constructor() {
     const shopView = new ShopView();
+    const productService = new ProductService(new ProductModel());
     // Tham số thứ 3 là true để Layout biết đây là trang Shop
-    super(null, shopView, true);
+    super(productService, shopView, true);
   }
 
   async init() {
-    // 1. Kêu Layout render ShopHeader (xanh) và Footer
     Layout.render(true);
 
-    // 2. Kêu ShopView render lưới sản phẩm góc cạnh
-    this.view.render();
-
-    // 3. Chỗ này sau này bạn cùng team chỉ cần cắm logic Giỏ hàng vào đây:
     this.view.onAddToCart = (product) => {
-      // Sau này: cartService.addItem(product)
-      console.log("[ShopController] Nhận được yêu cầu thêm giỏ hàng:", product);
+      cartService.addItem(product);
     };
+
+    try {
+      const products = await this.service.getProducts();
+      this.view.render({ products });
+    } catch (error) {
+      console.error("[ShopController Error]: Không tải được sản phẩm:", error);
+      this.view.render({
+        error: "Không tải được danh sách sản phẩm. Vui lòng thử lại sau.",
+      });
+    }
   }
 }

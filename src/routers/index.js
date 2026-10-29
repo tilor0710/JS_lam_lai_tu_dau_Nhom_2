@@ -2,6 +2,7 @@ import Navigo from "navigo";
 import { HomeController } from "../controllers/home/HomeController.js";
 import { LocateController } from "../controllers/locate/LocateController.js";
 import { ShopController } from "../controllers/shop/ShopController.js";
+import { CartController } from "../controllers/cart/cartController.js";
 import { CalculateRatesController } from "../controllers/calculate/CalculateRatesController.js";
 
 export const router = new Navigo("/", { hash: true });

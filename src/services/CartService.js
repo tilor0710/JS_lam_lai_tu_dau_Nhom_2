@@ -4,7 +4,7 @@ const STORAGE_KEY = "quickship_cart";
 const MAX_QTY_PER_ITEM = 99;
 
 /**
- * Nghiệp vụ Giỏ hàng (JavaScript thuần, lưu bền bằng localStorage).
+ * Nghiệp vụ Giỏ hàng (lưu số lượng bằng localStorage, thông tin sản phẩm lấy từ db.json).
  *
  * - Không phụ thuộc DOM hay thư viện ngoài => dễ test, dễ tái sử dụng.
  * - Dùng chung 1 instance (xem `cartService` ở cuối file) để mọi trang
@@ -92,6 +92,36 @@ export class CartService extends BaseService {
     return () => this.listeners.delete(listener);
   }
 
+  /** Đồng bộ thông tin sản phẩm đã lưu với danh mục mới nhất từ db.json. */
+  syncProducts(products) {
+    if (!Array.isArray(products)) {
+      throw new Error("Danh sách sản phẩm không hợp lệ, không thể đồng bộ giỏ hàng.");
+    }
+
+    const productsById = new Map(
+      products.map((product) => [Number(product.id), product]),
+    );
+    const syncedItems = this.items
+      .map((item) => {
+        const product = productsById.get(item.id);
+        if (!product) return null;
+
+        return {
+          id: item.id,
+          name: String(product.name ?? ""),
+          price: Number(product.price),
+          image: String(product.image ?? ""),
+          quantity: item.quantity,
+        };
+      })
+      .filter(Boolean);
+
+    if (JSON.stringify(syncedItems) !== JSON.stringify(this.items)) {
+      this.items = syncedItems;
+      this.#save();
+    }
+  }
+
   /** Thêm sản phẩm; nếu đã có thì cộng dồn số lượng. */
   addItem(product, quantity = 1) {
     const id = Number(product?.id);
@@ -108,6 +138,9 @@ export class CartService extends BaseService {
     const existing = this.items.find((it) => it.id === id);
 
     if (existing) {
+      existing.name = String(product.name ?? "");
+      existing.price = price;
+      existing.image = String(product.image ?? "");
       existing.quantity = Math.min(existing.quantity + qty, MAX_QTY_PER_ITEM);
     } else {
       this.items.push({
