@@ -28,6 +28,11 @@ export const initRouter = () => {
       const shopCtrl = new ShopController();
       shopCtrl.init();
     })
+    // Giỏ hàng
+    .on("/cart", () => {
+      const cartCtrl = new CartController();
+      cartCtrl.init();
+    })
     // Trang 404 góc cạnh
     .notFound(() => {
       const content = document.querySelector("#app-content");
