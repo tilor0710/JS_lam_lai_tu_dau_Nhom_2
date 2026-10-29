@@ -100,12 +100,7 @@
   "carts": [
     {
       "id": 1,
-      "items": [
-        {
-          "productId": 2,
-          "quantity": 1
-        }
-      ]
+      "items": []
     }
   ],
   "shipments": [
