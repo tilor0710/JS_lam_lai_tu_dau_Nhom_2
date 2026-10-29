@@ -7,7 +7,7 @@ import plusIcon from "lucide-static/icons/plus.svg";
 import arrowLeftIcon from "lucide-static/icons/arrow-left.svg";
 import packageIcon from "lucide-static/icons/package.svg";
 
-// Dữ liệu giỏ hàng đến từ localStorage nên PHẢI escape trước khi chèn vào HTML.
+// Escape dữ liệu từ API trước khi chèn vào HTML.
 const escapeHTML = (value) =>
   String(value)
     .replaceAll("&", "&amp;")

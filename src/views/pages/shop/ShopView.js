@@ -164,7 +164,7 @@ export class ShopView extends BaseView {
     const addButtons = document.querySelectorAll(".btn-add-to-cart");
 
     addButtons.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("click", async (e) => {
         const targetBtn = e.currentTarget;
         const productData = {
           id: targetBtn.dataset.productId,
@@ -173,19 +173,24 @@ export class ShopView extends BaseView {
           image: targetBtn.dataset.productImage,
         };
 
-        // Hiệu ứng phản hồi nhanh khi click
         const originalText = targetBtn.innerHTML;
-        targetBtn.innerHTML = `<span>✓ Đã thêm vào giỏ</span>`;
-        targetBtn.classList.replace("bg-gray-900", "bg-[#b91c1c]");
-
-        setTimeout(() => {
-          targetBtn.innerHTML = originalText;
-          targetBtn.classList.replace("bg-[#b91c1c]", "bg-gray-900");
-        }, 1200);
-
-        // Bắn callback ra ngoài nếu controller có đăng ký
-        if (this.onAddToCart) {
-          this.onAddToCart(productData);
+        targetBtn.disabled = true;
+        try {
+          if (!this.onAddToCart) {
+            throw new Error("Chưa đăng ký xử lý thêm sản phẩm vào giỏ hàng.");
+          }
+          await this.onAddToCart(productData);
+          targetBtn.innerHTML = `<span>✓ Đã thêm vào giỏ</span>`;
+        } catch (error) {
+          console.error("[ShopView Error]: Không lưu được giỏ hàng:", error);
+          targetBtn.innerHTML = `<span>Không thể thêm, thử lại</span>`;
+        } finally {
+          targetBtn.classList.replace("bg-gray-900", "bg-[#b91c1c]");
+          setTimeout(() => {
+            targetBtn.innerHTML = originalText;
+            targetBtn.classList.replace("bg-[#b91c1c]", "bg-gray-900");
+            targetBtn.disabled = false;
+          }, 1200);
         }
       });
     });

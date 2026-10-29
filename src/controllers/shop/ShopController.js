@@ -16,12 +16,11 @@ export class ShopController extends BaseController {
   async init() {
     Layout.render(true);
 
-    this.view.onAddToCart = (product) => {
-      cartService.addItem(product);
-    };
+    this.view.onAddToCart = (product) => cartService.addItem(product);
 
     try {
       const products = await this.service.getProducts();
+      await cartService.load(products);
       this.view.render({ products });
     } catch (error) {
       console.error("[ShopController Error]: Không tải được sản phẩm:", error);

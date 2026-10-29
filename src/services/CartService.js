@@ -1,129 +1,99 @@
 import { BaseService } from "../base/baseService.js";
+import { CartModel } from "../models/CartModel.js";
 
-const STORAGE_KEY = "quickship_cart";
 const MAX_QTY_PER_ITEM = 99;
 
 /**
- * Nghiệp vụ Giỏ hàng (lưu số lượng bằng localStorage, thông tin sản phẩm lấy từ db.json).
- *
- * - Không phụ thuộc DOM hay thư viện ngoài => dễ test, dễ tái sử dụng.
- * - Dùng chung 1 instance (xem `cartService` ở cuối file) để mọi trang
- *   (Shop, Cart, Header badge) cùng nhìn thấy một giỏ hàng duy nhất.
+ * Lưu productId và quantity trong db.json; thông tin sản phẩm được lấy từ products.
  */
 export class CartService extends BaseService {
-  constructor() {
-    // Giỏ hàng không gọi API nên không cần Model.
-    super(null);
+  constructor(cartModel) {
+    super(cartModel);
     this.listeners = new Set();
-    this.items = this.#load();
+    this.items = [];
+    this.products = new Map();
+  }
 
-    // Đồng bộ khi người dùng mở nhiều tab cùng lúc.
-    if (typeof window !== "undefined") {
-      window.addEventListener("storage", (e) => {
-        if (e.key === STORAGE_KEY || e.key === null) {
-          this.items = this.#load();
-          this.#notify();
+  async load(products) {
+    if (!Array.isArray(products)) {
+      throw new Error("Danh sách sản phẩm không hợp lệ, không thể tải giỏ hàng.");
+    }
+
+    this.products = new Map(products.map((product) => [Number(product.id), product]));
+
+    const cart = await this.model.getDefaultCart();
+    if (!cart || !Array.isArray(cart.items)) {
+      throw new Error("Dữ liệu giỏ hàng trong db.json không hợp lệ.");
+    }
+
+    const items = cart.items
+      .map((item) => {
+        const id = Number(item?.productId);
+        const quantity = Math.floor(Number(item?.quantity));
+        const product = this.products.get(id);
+
+        if (
+          !product ||
+          !Number.isFinite(quantity) ||
+          quantity <= 0
+        ) {
+          return null;
         }
-      });
+
+        return this.#withProduct(product, Math.min(quantity, MAX_QTY_PER_ITEM));
+      })
+      .filter(Boolean);
+
+    const normalized = items.map(({ id, quantity }) => ({
+      productId: id,
+      quantity,
+    }));
+    if (JSON.stringify(normalized) !== JSON.stringify(cart.items)) {
+      await this.model.updateItems(normalized);
     }
+
+    this.items = items;
+    this.#notify();
+    return this.getItems();
   }
 
-  /* ------------------------------ ĐỌC / GHI ------------------------------ */
-
-  #load() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-
-      const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return [];
-
-      // Dữ liệu trong localStorage có thể bị sửa tay => lọc & ép kiểu lại.
-      return parsed
-        .map((it) => ({
-          id: Number(it?.id),
-          name: String(it?.name ?? ""),
-          price: Number(it?.price),
-          image: String(it?.image ?? ""),
-          quantity: Math.floor(Number(it?.quantity)),
-        }))
-        .filter(
-          (it) =>
-            Number.isFinite(it.id) &&
-            Number.isFinite(it.price) &&
-            it.price >= 0 &&
-            it.quantity > 0,
-        )
-        .map((it) => ({
-          ...it,
-          quantity: Math.min(it.quantity, MAX_QTY_PER_ITEM),
-        }));
-    } catch (error) {
-      console.error("[CartService Error]: Không đọc được giỏ hàng:", error);
-      return [];
-    }
+  #withProduct(product, quantity) {
+    return {
+      id: Number(product.id),
+      name: String(product.name ?? ""),
+      price: Number(product.price),
+      image: String(product.image ?? ""),
+      quantity,
+    };
   }
 
-  #save() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.items));
-    } catch (error) {
-      // Safari chế độ riêng tư / hết dung lượng: giỏ vẫn chạy trong bộ nhớ.
-      console.error("[CartService Error]: Không lưu được giỏ hàng:", error);
-    }
+  async #save(items) {
+    const persistedItems = items.map(({ id, quantity }) => ({
+      productId: id,
+      quantity,
+    }));
+
+    await this.model.updateItems(persistedItems);
+    this.items = items;
     this.#notify();
   }
 
   #notify() {
-    this.listeners.forEach((fn) => {
+    this.listeners.forEach((listener) => {
       try {
-        fn(this.getItems());
+        listener(this.getItems());
       } catch (error) {
         console.error("[CartService Error]: Lỗi listener:", error);
       }
     });
   }
 
-  /* ------------------------------ THAO TÁC ------------------------------- */
-
-  /** Đăng ký lắng nghe thay đổi giỏ hàng. Trả về hàm huỷ đăng ký. */
   subscribe(listener) {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
   }
 
-  /** Đồng bộ thông tin sản phẩm đã lưu với danh mục mới nhất từ db.json. */
-  syncProducts(products) {
-    if (!Array.isArray(products)) {
-      throw new Error("Danh sách sản phẩm không hợp lệ, không thể đồng bộ giỏ hàng.");
-    }
-
-    const productsById = new Map(
-      products.map((product) => [Number(product.id), product]),
-    );
-    const syncedItems = this.items
-      .map((item) => {
-        const product = productsById.get(item.id);
-        if (!product) return null;
-
-        return {
-          id: item.id,
-          name: String(product.name ?? ""),
-          price: Number(product.price),
-          image: String(product.image ?? ""),
-          quantity: item.quantity,
-        };
-      })
-      .filter(Boolean);
-
-    if (JSON.stringify(syncedItems) !== JSON.stringify(this.items)) {
-      this.items = syncedItems;
-      this.#save();
-    }
-  }
-
-  /** Thêm sản phẩm; nếu đã có thì cộng dồn số lượng. */
-  addItem(product, quantity = 1) {
+  async addItem(product, quantity = 1) {
     const id = Number(product?.id);
     const price = Number(product?.price);
     const qty = Math.floor(Number(quantity));
@@ -135,83 +105,75 @@ export class CartService extends BaseService {
       throw new Error("Số lượng phải là số nguyên lớn hơn 0!");
     }
 
-    const existing = this.items.find((it) => it.id === id);
+    const currentProduct = this.products.get(id) ?? product;
+    const existing = this.items.find((item) => item.id === id);
+    const nextItems = existing
+      ? this.items.map((item) =>
+          item.id === id
+            ? this.#withProduct(
+                currentProduct,
+                Math.min(item.quantity + qty, MAX_QTY_PER_ITEM),
+              )
+            : item,
+        )
+      : [
+          ...this.items,
+          this.#withProduct(currentProduct, Math.min(qty, MAX_QTY_PER_ITEM)),
+        ];
 
-    if (existing) {
-      existing.name = String(product.name ?? "");
-      existing.price = price;
-      existing.image = String(product.image ?? "");
-      existing.quantity = Math.min(existing.quantity + qty, MAX_QTY_PER_ITEM);
-    } else {
-      this.items.push({
-        id,
-        name: String(product.name ?? ""),
-        price,
-        image: String(product.image ?? ""),
-        quantity: Math.min(qty, MAX_QTY_PER_ITEM),
-      });
-    }
-
-    this.#save();
+    await this.#save(nextItems);
   }
 
-  /** Đặt lại số lượng. Số lượng <= 0 sẽ xoá sản phẩm khỏi giỏ. */
-  updateQuantity(id, quantity) {
+  async updateQuantity(id, quantity) {
     const numId = Number(id);
     const qty = Math.floor(Number(quantity));
     if (!Number.isFinite(qty)) return;
 
-    const item = this.items.find((it) => it.id === numId);
-    if (!item) return;
-
     if (qty <= 0) {
-      this.removeItem(numId);
+      await this.removeItem(numId);
       return;
     }
 
-    item.quantity = Math.min(qty, MAX_QTY_PER_ITEM);
-    this.#save();
+    const nextItems = this.items.map((item) =>
+      item.id === numId
+        ? { ...item, quantity: Math.min(qty, MAX_QTY_PER_ITEM) }
+        : item,
+    );
+    if (nextItems.some((item, index) => item.quantity !== this.items[index]?.quantity)) {
+      await this.#save(nextItems);
+    }
   }
 
-  removeItem(id) {
+  async removeItem(id) {
     const numId = Number(id);
-    this.items = this.items.filter((it) => it.id !== numId);
-    this.#save();
+    await this.#save(this.items.filter((item) => item.id !== numId));
   }
 
-  clear() {
-    this.items = [];
-    this.#save();
+  async clear() {
+    await this.#save([]);
   }
 
-  /* ------------------------------- TRUY VẤN ------------------------------ */
-
-  /** Trả về bản sao để bên ngoài không sửa trực tiếp vào state. */
   getItems() {
-    return this.items.map((it) => ({ ...it }));
+    return this.items.map((item) => ({ ...item }));
   }
 
   getTotalQuantity() {
-    return this.items.reduce((sum, it) => sum + it.quantity, 0);
+    return this.items.reduce((sum, item) => sum + item.quantity, 0);
   }
 
   getTotalPrice() {
-    return this.items.reduce((sum, it) => sum + it.price * it.quantity, 0);
+    return this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 
   isEmpty() {
     return this.items.length === 0;
   }
 
-  /**
-   * Chuyển giỏ hàng sang đúng định dạng `items` của bảng `orders` trong
-   * db.json, để bước Thanh toán sau này chỉ việc POST lên.
-   */
   toOrderItems() {
-    return this.items.map((it) => ({
-      productId: it.id,
-      quantity: it.quantity,
-      price: it.price,
+    return this.items.map((item) => ({
+      productId: item.id,
+      quantity: item.quantity,
+      price: item.price,
     }));
   }
 
@@ -223,4 +185,4 @@ export class CartService extends BaseService {
   }
 }
 
-export const cartService = new CartService();
+export const cartService = new CartService(new CartModel());
