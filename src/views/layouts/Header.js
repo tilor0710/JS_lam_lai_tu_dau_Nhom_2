@@ -21,7 +21,6 @@ export class Header {
           <!-- Menu Desktop -->
           <nav class="hidden md:flex items-center gap-1 font-semibold text-sm">
             <a href="#/" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Trang chủ</a>
-            <a href="#/track" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Tra cứu</a>
             <a href="#/calculate-rates" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Tính cước</a>
             <a href="#/locate-us" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Bưu cục</a>
             <a href="#/shop" class="px-3.5 py-2 text-[#b91c1c] font-bold border border-[#b91c1c] hover:bg-[#b91c1c] hover:text-white transition uppercase tracking-wide ml-2">
@@ -51,7 +50,6 @@ export class Header {
         <!-- MENU MOBILE XỔ XUỐNG VUÔNG VỨC -->
         <div id="mobile-menu-drawer" class="hidden md:hidden border-t-2 border-gray-900 bg-white px-4 py-3 flex flex-col gap-2 font-['Oswald'] uppercase text-xs tracking-wider border-b-2 border-[#b91c1c]">
           <a href="#/" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Trang chủ</a>
-          <a href="#/track" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Tra cứu bưu gửi</a>
           <a href="#/calculate-rates" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Tính cước vận chuyển</a>
           <a href="#/locate-us" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Mạng lưới bưu cục</a>
           <a href="#/shop" class="py-2 px-3 bg-[#b91c1c] text-white font-bold text-center mt-1">Cửa hàng Vật tư</a>
