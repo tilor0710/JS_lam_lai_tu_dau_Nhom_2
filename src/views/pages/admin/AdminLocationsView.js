@@ -2,6 +2,7 @@ import { BaseView } from "../../../base/baseView.js";
 import mapPinIcon from "lucide-static/icons/map-pin.svg";
 import plusIcon from "lucide-static/icons/plus.svg";
 import trashIcon from "lucide-static/icons/trash.svg";
+import { Popup } from "../../../components/Popup.js";
 import {
   ADMIN_PAGE_SIZE,
   getPageItems,
@@ -154,9 +155,18 @@ export class AdminLocationsView extends BaseView {
       });
 
     document.querySelectorAll(".btn-delete-loc").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
         const id = e.currentTarget.dataset.id;
-        if (confirm("Bạn có chắc chắn muốn xóa bưu cục này khỏi mạng lưới?")) {
+        const confirmed = await Popup.confirm(
+          "Bạn có chắc chắn muốn xóa bưu cục này khỏi mạng lưới?",
+          {
+            title: "Xóa bưu cục?",
+            type: "warning",
+            confirmText: "Xóa bưu cục",
+          },
+        );
+        if (confirmed) {
           if (this.onDeleteLocation) this.onDeleteLocation(id);
         }
       });

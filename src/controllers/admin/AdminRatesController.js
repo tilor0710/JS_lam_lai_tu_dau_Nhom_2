@@ -2,6 +2,7 @@ import { BaseController } from "../../base/baseController.js";
 import { AdminRatesView } from "../../views/pages/admin/AdminRatesView.js";
 import { AdminLayout } from "../../views/layouts/admin/AdminLayout.js";
 import { RateModel } from "../../models/RateModel.js";
+import { Popup } from "../../components/Popup.js";
 
 export class AdminRatesController extends BaseController {
   constructor() {
@@ -19,7 +20,7 @@ export class AdminRatesController extends BaseController {
 
     this.view.onUpdateRates = async (updatedData) => {
       await this.rateModel.patch(1, updatedData);
-      alert("Đã lưu bảng cước mới thành công vào hệ thống!");
+      await Popup.alert("Đã lưu bảng cước mới thành công vào hệ thống!");
       await renderPage();
     };
 

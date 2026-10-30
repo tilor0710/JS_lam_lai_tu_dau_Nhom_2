@@ -6,6 +6,7 @@ import minusIcon from "lucide-static/icons/minus.svg";
 import plusIcon from "lucide-static/icons/plus.svg";
 import arrowLeftIcon from "lucide-static/icons/arrow-left.svg";
 import packageIcon from "lucide-static/icons/package.svg";
+import { Popup } from "../../../components/Popup.js";
 const escapeHTML = (value) =>
   String(value)
     .replaceAll("&", "&amp;")
@@ -274,9 +275,17 @@ export class CartView extends BaseView {
 
     root
       .querySelector('[data-action="clear"]')
-      ?.addEventListener("click", (event) => {
+      ?.addEventListener("click", async (event) => {
         event.preventDefault();
-        if (window.confirm("Bạn có chắc muốn xóa toàn bộ giỏ hàng?")) {
+        const confirmed = await Popup.confirm(
+          "Bạn có chắc muốn xóa toàn bộ giỏ hàng?",
+          {
+            title: "Xóa toàn bộ giỏ hàng?",
+            type: "warning",
+            confirmText: "Xóa giỏ hàng",
+          },
+        );
+        if (confirmed) {
           this.onClear?.();
         }
       });

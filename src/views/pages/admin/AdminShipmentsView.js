@@ -3,6 +3,7 @@ import packageIcon from "lucide-static/icons/package.svg";
 import plusIcon from "lucide-static/icons/plus.svg";
 import truckIcon from "lucide-static/icons/truck.svg";
 import clockIcon from "lucide-static/icons/clock.svg";
+import { Popup } from "../../../components/Popup.js";
 import {
   ADMIN_PAGE_SIZE,
   getPageItems,
@@ -121,39 +122,6 @@ export class AdminShipmentsView extends BaseView {
           </table>
           ${getPaginationTemplate(shipments.length, this.currentPage)}
         </div>
-
-
-        <!-- Cửa sổ cập nhật hành trình vận đơn -->
-        <div id="modal-dispatch" class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto bg-slate-900/60 p-3 sm:p-4">
-          <div class="my-auto w-full max-w-md rounded-none border-2 border-gray-900 bg-white p-4 shadow-[8px_8px_0px_0px_#b91c1c] sm:p-6">
-            <div class="border-b-2 border-gray-900 pb-3 mb-4 flex justify-between items-center">
-              <h3 class="font-['Oswald'] font-bold text-xl uppercase text-gray-900">Bắn sự kiện hành trình</h3>
-              <span id="modal-target-code" class="font-mono font-bold text-[#b91c1c] text-sm"></span>
-            </div>
-            <form id="form-dispatch-event" class="flex flex-col gap-3.5 text-xs font-bold uppercase tracking-wider text-gray-700">
-              <input type="hidden" id="modal-shipment-id" />
-              <div class="flex flex-col gap-1">
-                <label>Vị trí ghi nhận:</label>
-                <input id="event-location" type="text" required placeholder="Bưu cục Cầu Giấy, Kho Tân Bình..." class="border-2 border-gray-900 p-2 text-xs font-medium text-gray-900 outline-none rounded-none" />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label>Trạng thái bưu gửi:</label>
-                <select id="event-status" class="border-2 border-gray-900 p-2 text-xs font-medium text-gray-900 outline-none rounded-none bg-white">
-                  <option value="Đã tiếp nhận kiện hàng">Đã tiếp nhận kiện hàng</option>
-                  <option value="Đang luân chuyển liên tỉnh">Đang luân chuyển liên tỉnh</option>
-                  <option value="Đến bưu cục phát">Đến bưu cục phát</option>
-                  <option value="Đang phát hàng">Đang phát hàng</option>
-                  <option value="Giao hàng thành công">Giao hàng thành công</option>
-                </select>
-              </div>
-              <div class="flex justify-end gap-2 pt-3 border-t border-gray-200">
-                <button type="button" id="btn-close-modal" class="px-4 py-2 border-2 border-gray-400 text-gray-600 font-['Oswald'] text-xs font-bold uppercase rounded-none hover:bg-gray-100 cursor-pointer">Đóng</button>
-                <button type="submit" class="px-5 py-2 bg-[#b91c1c] hover:bg-[#991b1b] text-white font-['Oswald'] text-xs font-bold uppercase rounded-none transition cursor-pointer">Cập nhật ngay</button>
-              </div>
-            </form>
-          </div>
-        </div>
-
       </div>
     `;
   }
@@ -191,32 +159,41 @@ export class AdminShipmentsView extends BaseView {
         };
         if (this.onCreateShipment) this.onCreateShipment(payload);
       });
-    const modal = document.querySelector("#modal-dispatch");
     document.querySelectorAll(".btn-open-dispatch").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
         const id = e.currentTarget.dataset.id;
-        document.querySelector("#modal-shipment-id").value = id;
-        document.querySelector("#modal-target-code").textContent = id;
-        modal?.classList.remove("hidden");
+        const submitted = await Popup.form({
+          title: "Cập nhật hành trình",
+          reference: id,
+          submitText: "Cập nhật ngay",
+          content: /*html*/ `
+            <label class="flex flex-col gap-1.5">
+              Vị trí ghi nhận
+              <input name="location" type="text" required maxlength="200" placeholder="Bưu cục Cầu Giấy, Kho Tân Bình..." class="border-2 border-gray-900 p-2.5 text-sm font-medium normal-case text-gray-900 outline-none focus:border-[#b91c1c]" />
+            </label>
+            <label class="flex flex-col gap-1.5">
+              Trạng thái bưu gửi
+              <select name="status" required class="border-2 border-gray-900 bg-white p-2.5 text-sm font-medium normal-case text-gray-900 outline-none focus:border-[#b91c1c]">
+                <option value="Đã tiếp nhận kiện hàng">Đã tiếp nhận kiện hàng</option>
+                <option value="Đang luân chuyển liên tỉnh">Đang luân chuyển liên tỉnh</option>
+                <option value="Đến bưu cục phát">Đến bưu cục phát</option>
+                <option value="Đang phát hàng">Đang phát hàng</option>
+                <option value="Giao hàng thành công">Giao hàng thành công</option>
+              </select>
+            </label>
+          `,
+          onSubmit: async (formData) => {
+            await this.onAddEvent?.(id, {
+              location: String(formData.location ?? "").trim(),
+              status: String(formData.status ?? ""),
+            });
+          },
+        });
+        if (submitted) {
+          await Popup.alert(`Đã cập nhật chặng mới cho đơn ${id}!`);
+        }
       });
     });
-
-    document
-      .querySelector("#btn-close-modal")
-      ?.addEventListener("click", () => {
-        modal?.classList.add("hidden");
-      });
-    document
-      .querySelector("#form-dispatch-event")
-      ?.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const id = document.querySelector("#modal-shipment-id")?.value;
-        const eventData = {
-          location: document.querySelector("#event-location")?.value || "",
-          status: document.querySelector("#event-status")?.value || "",
-        };
-        if (this.onAddEvent) this.onAddEvent(id, eventData);
-        modal?.classList.add("hidden");
-      });
   }
 }

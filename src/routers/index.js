@@ -13,18 +13,19 @@ import { AdminShipmentsController } from "../controllers/admin/AdminShipmentsCon
 import { AdminLocationsController } from "../controllers/admin/AdminLocationsController.js";
 import { AdminRatesController } from "../controllers/admin/AdminRatesController.js";
 import { AdminProductsController } from "../controllers/admin/AdminProductsController.js";
-
 import { AuthService } from "../services/AuthService.js";
+import { Popup } from "../components/Popup.js";
 
 export const router = new Navigo("/");
 const withTitle = (title, render) => (match) => {
     document.title = title;
     render(match);
 };
-const adminGuard = (callback) => {
+const adminGuard = async (callback) => {
     if (!AuthService.isAdmin()) {
-        alert(
+        await Popup.alert(
             "⚠️ CẢNH BÁO: Bạn cần đăng nhập với tài khoản ADMIN để truy cập!",
+            { title: "Không có quyền truy cập", type: "warning" },
         );
         router.navigate("/auth");
         return;

@@ -4,6 +4,7 @@ import { ProductModel } from "../../models/ProductModel.js";
 import { ProductService } from "../../services/ProductService.js";
 import { Layout } from "../../views/layouts/Layout.js";
 import { cartService } from "../../services/CartService.js";
+import { Popup } from "../../components/Popup.js";
 
 export class ShopDetailController extends BaseController {
     constructor() {
@@ -26,12 +27,23 @@ export class ShopDetailController extends BaseController {
 
         this.view.onAddToCart = async (product, quantity) => {
             if (!product || !Number.isInteger(quantity) || quantity <= 0) {
-                alert("Số lượng sản phẩm không hợp lệ.");
+                await Popup.alert("Số lượng sản phẩm không hợp lệ.", {
+                    title: "Không thể thêm sản phẩm",
+                    type: "error",
+                });
                 return;
             }
 
-            await cartService.addItem(product, quantity);
-            alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng.`);
+            try {
+                await cartService.addItem(product, quantity);
+                await Popup.alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng.`);
+            } catch (error) {
+                console.error("[ShopDetailController Error]: Không thêm được sản phẩm vào giỏ hàng:", error);
+                await Popup.alert(
+                    error.message || "Không thể thêm sản phẩm vào giỏ hàng.",
+                    { title: "Không thể thêm sản phẩm", type: "error" },
+                );
+            }
         };
 
         const productId = this.#getProductIdFromUrl(match);

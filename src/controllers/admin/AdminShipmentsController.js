@@ -3,6 +3,7 @@ import { AdminShipmentsView } from "../../views/pages/admin/AdminShipmentsView.j
 import { AdminLayout } from "../../views/layouts/admin/AdminLayout.js";
 import { ShipmentModel } from "../../models/ShipmentModel.js";
 import { ADMIN_PAGE_SIZE } from "../../views/pages/admin/AdminPagination.js";
+import { Popup } from "../../components/Popup.js";
 
 export class AdminShipmentsController extends BaseController {
   constructor() {
@@ -54,7 +55,7 @@ export class AdminShipmentsController extends BaseController {
       };
 
       await this.shipmentModel.post(newShipment);
-      alert(`Đã tạo thành công vận đơn: ${randomCode}`);
+      await Popup.alert(`Đã tạo thành công vận đơn: ${randomCode}`);
       await renderPage(randomCode);
     };
     this.view.onAddEvent = async (id, eventData) => {
@@ -78,7 +79,6 @@ export class AdminShipmentsController extends BaseController {
           currentStatus: statusMap,
         });
 
-        alert(`Đã cập nhật chặng mới cho đơn ${id}!`);
         await renderPage();
       }
     };

@@ -3,6 +3,7 @@ import { AdminProductsView } from "../../views/pages/admin/AdminProductsView.js"
 import { AdminLayout } from "../../views/layouts/admin/AdminLayout.js";
 import { ProductModel } from "../../models/ProductModel.js";
 import { ADMIN_PAGE_SIZE } from "../../views/pages/admin/AdminPagination.js";
+import { Popup } from "../../components/Popup.js";
 
 export class AdminProductsController extends BaseController {
   constructor() {
@@ -37,7 +38,7 @@ export class AdminProductsController extends BaseController {
 
     this.view.onCreateProduct = async (payload) => {
       const product = await this.productModel.post(payload);
-      alert("Đã thêm mặt hàng thành công vào kho vật tư!");
+      await Popup.alert("Đã thêm mặt hàng thành công vào kho vật tư!");
       await renderPage(product?.id);
     };
 

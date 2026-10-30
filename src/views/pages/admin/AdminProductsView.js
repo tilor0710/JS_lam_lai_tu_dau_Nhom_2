@@ -1,6 +1,7 @@
 import { BaseView } from "../../../base/baseView.js";
 import plusIcon from "lucide-static/icons/plus.svg";
 import trashIcon from "lucide-static/icons/trash.svg";
+import { Popup } from "../../../components/Popup.js";
 import {
   ADMIN_PAGE_SIZE,
   getPageItems,
@@ -175,9 +176,18 @@ export class AdminProductsView extends BaseView {
       });
 
     document.querySelectorAll(".btn-delete-prod").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
         const id = e.currentTarget.dataset.id;
-        if (confirm("Bạn có chắc chắn muốn xóa mặt hàng này khỏi kho?")) {
+        const confirmed = await Popup.confirm(
+          "Bạn có chắc chắn muốn xóa mặt hàng này khỏi kho?",
+          {
+            title: "Xóa vật tư khỏi kho?",
+            type: "warning",
+            confirmText: "Xóa vật tư",
+          },
+        );
+        if (confirmed) {
           if (this.onDeleteProduct) this.onDeleteProduct(id);
         }
       });

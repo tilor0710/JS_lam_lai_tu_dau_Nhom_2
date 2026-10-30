@@ -3,6 +3,7 @@ import { AdminLocationsView } from "../../views/pages/admin/AdminLocationsView.j
 import { AdminLayout } from "../../views/layouts/admin/AdminLayout.js";
 import { LocationModel } from "../../models/LocationModel.js";
 import { ADMIN_PAGE_SIZE } from "../../views/pages/admin/AdminPagination.js";
+import { Popup } from "../../components/Popup.js";
 
 export class AdminLocationsController extends BaseController {
   constructor() {
@@ -37,7 +38,7 @@ export class AdminLocationsController extends BaseController {
 
     this.view.onCreateLocation = async (payload) => {
       const location = await this.locationModel.post(payload);
-      alert("Đã thêm bưu cục thành công vào mạng lưới!");
+      await Popup.alert("Đã thêm bưu cục thành công vào mạng lưới!");
       await renderPage(location?.id);
     };
 
