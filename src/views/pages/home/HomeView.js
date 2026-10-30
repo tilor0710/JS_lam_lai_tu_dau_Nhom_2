@@ -11,10 +11,11 @@ export class HomeView extends BaseView {
   }
 
   getTemplate() {
-    return `
+    return /*html*/ `
       <div class="home-page">
+        <!-- Banner, tra cứu vận đơn và tiện ích trang chủ -->
         ${HeroSection.getTemplate()}
-        <!-- Sau này nếu có thêm Section nào khác thì chỉ việc nhét thêm vào đây -->
+
       </div>
     `;
   }
@@ -41,7 +42,7 @@ export class HomeView extends BaseView {
   showLoading() {
     const resultBox = document.querySelector("#tracking-result");
     if (resultBox) {
-      resultBox.innerHTML = `
+      resultBox.innerHTML = /*html*/ `
         <div class="p-3 bg-gray-100 border border-gray-300 text-xs font-mono uppercase tracking-wider text-gray-600 rounded-none text-center">
           Đang truy xuất hệ thống bưu gửi...
         </div>
@@ -52,7 +53,7 @@ export class HomeView extends BaseView {
   renderError(message) {
     const resultBox = document.querySelector("#tracking-result");
     if (resultBox) {
-      resultBox.innerHTML = `
+      resultBox.innerHTML = /*html*/ `
         <div class="p-3 bg-red-50 border-2 border-[#b91c1c] text-xs font-bold uppercase tracking-wider text-[#b91c1c] rounded-none flex items-center gap-2">
           <img src="${alertCircleIcon}" class="w-4 h-4 shrink-0 text-[#b91c1c]" alt="" />
           <span>${message}</span>
@@ -69,9 +70,7 @@ export class HomeView extends BaseView {
       this.renderError("Không tìm thấy thông tin mã vận đơn trên hệ thống!");
       return;
     }
-
-    // 1. Thẻ tóm tắt thông tin kiện hàng (Vuông vức, công nghiệp)
-    const summaryHtml = `
+    const summaryHtml = /*html*/ `
       <div class="bg-gray-50 border-2 border-gray-900 p-3.5 flex flex-col gap-1.5 rounded-none mt-1">
         <div class="flex justify-between items-center border-b border-gray-200 pb-1.5">
           <span class="font-['Oswald'] font-bold text-sm text-[#b91c1c] uppercase tracking-wide">
@@ -88,19 +87,17 @@ export class HomeView extends BaseView {
         </div>
       </div>
     `;
-
-    // 2. Timeline dòng thời gian (Chấm vuông đỏ, icon Lucide)
-    const timelineHtml = `
+    const timelineHtml = /*html*/ `
       <div class="mt-2 border-2 border-gray-900 bg-white p-3.5 flex flex-col gap-3 rounded-none max-h-56 overflow-y-auto">
         <div class="font-['Oswald'] font-bold text-xs uppercase tracking-wider text-gray-900 border-b border-gray-100 pb-1 flex items-center gap-1.5">
           <img src="${truckIcon}" class="w-3.5 h-3.5 text-[#b91c1c]" alt="" />
           <span>Lịch trình vận chuyển chi tiết</span>
         </div>
-        
+
         <div class="flex flex-col gap-3.5 border-l-2 border-[#b91c1c] ml-2 pl-3 py-1">
           ${(data.events || [])
             .map(
-              (ev) => `
+              (ev) => /*html*/ `
             <div class="relative flex flex-col gap-0.5">
               <span class="absolute -left-[18px] top-1 w-2.5 h-2.5 bg-[#b91c1c] border-2 border-white ring-1 ring-gray-900"></span>
               <span class="text-xs font-bold text-gray-900 uppercase tracking-wide">${ev.status}</span>

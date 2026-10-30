@@ -6,8 +6,6 @@ import minusIcon from "lucide-static/icons/minus.svg";
 import plusIcon from "lucide-static/icons/plus.svg";
 import arrowLeftIcon from "lucide-static/icons/arrow-left.svg";
 import packageIcon from "lucide-static/icons/package.svg";
-
-// Escape dữ liệu từ API trước khi chèn vào HTML.
 const escapeHTML = (value) =>
   String(value)
     .replaceAll("&", "&amp;")
@@ -19,11 +17,9 @@ const escapeHTML = (value) =>
 export class CartView extends BaseView {
   constructor() {
     super("#app-content");
-
-    // Callback để Controller đăng ký
-    this.onUpdateQuantity = null; // (id, quantity) => void
-    this.onRemove = null; // (id) => void
-    this.onClear = null; // () => void
+    this.onUpdateQuantity = null;
+    this.onRemove = null;
+    this.onClear = null;
   }
 
   getTemplate({
@@ -32,10 +28,10 @@ export class CartView extends BaseView {
     totalPrice = 0,
     error = "",
   } = {}) {
-    return `
+    return /*html*/ `
       <section class="max-w-7xl mx-auto px-4 py-8">
 
-        <!-- TIÊU ĐỀ TRANG -->
+
         <div class="border-b-2 border-gray-900 pb-6 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div class="border-l-4 border-[#b91c1c] pl-4">
             <span class="text-xs font-bold uppercase tracking-widest text-[#b91c1c]">Vật tư đóng gói bưu chính</span>
@@ -49,9 +45,10 @@ export class CartView extends BaseView {
           </a>
         </div>
 
+        <!-- Nội dung giỏ hàng hoặc thông báo lỗi -->
         ${
           error
-            ? `<div role="alert" class="bg-red-50 border-2 border-red-700 p-4 mb-6 text-sm text-red-800">${escapeHTML(error)}</div>`
+            ? /*html*/ `<div role="alert" class="bg-red-50 border-2 border-red-700 p-4 mb-6 text-sm text-red-800">${escapeHTML(error)}</div>`
             : ""
         }
         ${
@@ -65,7 +62,8 @@ export class CartView extends BaseView {
   }
 
   #getEmptyTemplate() {
-    return `
+    return /*html*/ `
+      <!-- Trạng thái giỏ hàng trống -->
       <div class="bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_#b91c1c] rounded-none p-10 sm:p-16 text-center">
         <div class="inline-flex bg-[#0f172a] p-4 text-[#f59e0b] mb-4">
           <img src="${shoppingCartIcon}" class="w-10 h-10 invert brightness-0" alt="" />
@@ -85,10 +83,11 @@ export class CartView extends BaseView {
   }
 
   #getCartTemplate(items, totalQuantity, totalPrice) {
-    return `
+    return /*html*/ `
+      <!-- Danh sách sản phẩm và tổng kết đơn hàng -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-        <!-- DANH SÁCH SẢN PHẨM -->
+
         <div class="lg:col-span-2 flex flex-col gap-4">
           ${items.map((item) => this.#getItemTemplate(item)).join("")}
 
@@ -104,7 +103,7 @@ export class CartView extends BaseView {
           </div>
         </div>
 
-        <!-- TÓM TẮT ĐƠN HÀNG -->
+
         <aside class="bg-white border-2 border-gray-900 shadow-[4px_4px_0px_0px_#f59e0b] rounded-none p-5 lg:sticky lg:top-24">
           <h2 class="font-['Oswald'] text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-3">
             Tóm tắt đơn hàng
@@ -140,17 +139,18 @@ export class CartView extends BaseView {
     const name = escapeHTML(item.name);
     const lineTotal = CartService.formatPrice(item.price * item.quantity);
 
-    return `
+    return /*html*/ `
+      <!-- Thông tin và thao tác của từng sản phẩm -->
       <article
         data-item-id="${item.id}"
         class="bg-white border-2 border-gray-900 shadow-[4px_4px_0px_0px_#0f172a] rounded-none p-3 sm:p-4 flex gap-3 sm:gap-4"
       >
-        <!-- Ảnh -->
+
         <div class="w-20 h-20 sm:w-28 sm:h-28 shrink-0 bg-gray-100 border-2 border-gray-900 overflow-hidden">
           <img src="${escapeHTML(item.image)}" alt="${name}" class="w-full h-full object-cover" />
         </div>
 
-        <!-- Thông tin -->
+
         <div class="flex-1 min-w-0 flex flex-col justify-between gap-3">
           <div class="flex justify-between items-start gap-3">
             <div class="min-w-0">
@@ -175,7 +175,7 @@ export class CartView extends BaseView {
           </div>
 
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <!-- Bộ chỉnh số lượng -->
+
             <div class="inline-flex items-stretch border-2 border-gray-900 rounded-none">
               <button
                 type="button"
@@ -207,7 +207,7 @@ export class CartView extends BaseView {
               </button>
             </div>
 
-            <!-- Thành tiền -->
+
             <span class="font-['Oswald'] text-lg sm:text-xl font-bold text-[#b91c1c] tracking-wide">
               <span data-role="line-total">
                 ${lineTotal}
@@ -219,11 +219,7 @@ export class CartView extends BaseView {
     `;
   }
 
-  /**
-   * Gắn sự kiện trực tiếp lên các phần tử vừa render. Không dùng container
-   * (#app-content) vì nó được dùng chung cho mọi trang: listener gắn ở đó
-   * sẽ tồn tại mãi và bị nhân đôi mỗi lần vào lại trang Giỏ hàng.
-   */
+
   run() {
     const root = this.container;
     if (!root) return;
@@ -246,14 +242,12 @@ export class CartView extends BaseView {
           `input[data-action="quantity"][data-id="${id}"]`,
         );
         const current = Number(input?.value) || 1;
-        // Về 0 nghĩa là xóa; để tránh xóa nhầm, giảm tối thiểu còn 1.
         this.onUpdateQuantity?.(id, Math.max(1, current - 1));
       });
     });
 
     root.querySelectorAll('input[data-action="quantity"]').forEach((input) => {
       input.addEventListener("change", () => {
-        // Ô trống / chữ / 0 / số âm => về 1 (xóa sản phẩm đã có nút thùng rác).
         const parsed = Math.floor(Number(input.value));
         const safe = Number.isFinite(parsed) && parsed >= 1 ? parsed : 1;
         this.onUpdateQuantity?.(input.dataset.id, safe);

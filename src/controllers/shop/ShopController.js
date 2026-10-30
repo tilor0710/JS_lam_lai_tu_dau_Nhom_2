@@ -9,7 +9,6 @@ export class ShopController extends BaseController {
   constructor() {
     const shopView = new ShopView();
     const productService = new ProductService(new ProductModel());
-    // Tham số thứ 3 là true để Layout biết đây là trang Shop
     super(productService, shopView, true);
   }
 

@@ -8,13 +8,14 @@ import arrowRightIcon from "lucide-static/icons/arrow-right.svg";
 
 export class HeroSection {
   static getTemplate() {
-    return `
+    return /*html*/ `
+      <!-- Banner giới thiệu dịch vụ -->
       <section class="bg-[#f1f5f9] py-6 sm:py-10 lg:py-14 border-b border-gray-200 overflow-x-hidden">
         <div class="max-w-7xl mx-auto px-3.5 sm:px-4">
-          
+
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
-            
-            <!-- CỘT TRÁI: BANNER GIỚI THIỆU -->
+
+
             <div class="lg:col-span-7 flex flex-col gap-4 sm:gap-6">
               <div class="border-l-4 border-[#b91c1c] pl-3 sm:pl-4">
                 <span class="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[#b91c1c]">
@@ -37,10 +38,11 @@ export class HeroSection {
               </div>
             </div>
 
-            <!-- CỘT PHẢI: CHIẾC HỘP TRA CỨU BƯU GỬI VUÔNG VỨC -->
+
+            <!-- Form tra cứu vận đơn và các tiện ích -->
             <div class="lg:col-span-5 w-full">
               <div class="bg-white border-2 border-gray-900 shadow-[4px_4px_0px_0px_#b91c1c] sm:shadow-[6px_6px_0px_0px_#b91c1c] p-4 sm:p-6 flex flex-col gap-4 sm:gap-5 rounded-none">
-                
+
                 <div class="border-b-2 border-gray-100 pb-2.5 sm:pb-3 flex justify-between items-center">
                   <h2 class="font-['Oswald'] font-bold text-xl sm:text-2xl uppercase tracking-wider text-gray-900">
                     TRA CỨU BƯU GỬI
@@ -50,20 +52,20 @@ export class HeroSection {
                   </span>
                 </div>
 
-                <!-- CỤM INPUT VÀ NÚT BẤM (IDs: tracking-input, tracking-btn) -->
+
                 <div class="flex flex-col gap-1.5">
                   <label class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-gray-700">Mã vận đơn bưu cục:</label>
-                  
+
                   <div class="flex flex-col sm:flex-row border-2 border-gray-900 focus-within:border-[#b91c1c] transition">
-                    <input 
-                      id="tracking-input" 
-                      type="text" 
-                      placeholder="VD: SP123456789VN..." 
+                    <input
+                      id="tracking-input"
+                      type="text"
+                      placeholder="VD: SP123456789VN..."
                       class="w-full flex-1 px-3 py-2.5 text-xs sm:text-sm font-mono text-gray-900 outline-none uppercase bg-white rounded-none"
                     />
-                    <button 
-                      id="tracking-btn" 
-                      type="button" 
+                    <button
+                      id="tracking-btn"
+                      type="button"
                       class="bg-[#b91c1c] hover:bg-[#991b1b] text-white px-4 sm:px-5 py-2.5 text-xs font-['Oswald'] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition cursor-pointer border-t-2 sm:border-t-0 sm:border-l-2 border-gray-900 whitespace-nowrap shrink-0 rounded-none"
                     >
                       <img src="${searchIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
@@ -72,10 +74,10 @@ export class HeroSection {
                   </div>
                 </div>
 
-                <!-- NƠI IN TIMELINE KẾT QUẢ TRA CỨU -->
+
                 <div id="tracking-result" class="flex flex-col gap-2"></div>
 
-                <!-- CÁC LINK TIỆN ÍCH -->
+
                 <div class="grid grid-cols-1 gap-1.5 sm:gap-2 pt-2 border-t border-gray-200">
                   <a href="#/calculate-rates" class="flex items-center justify-between p-2.5 sm:p-3 border border-gray-200 hover:border-[#b91c1c] hover:bg-red-50/30 transition group rounded-none">
                     <div class="flex items-center gap-2.5 sm:gap-3">
@@ -113,7 +115,8 @@ export class HeroSection {
 
           </div>
 
-          <!-- 2 KHỐI GỬI & NHẬN HÀNG GÓC CẠNH Ở DƯỚI -->
+
+          <!-- Các dịch vụ gửi và nhận hàng -->
           <div class="mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pt-6 sm:pt-8 border-t-2 border-gray-200">
             <div class="p-4 sm:p-6 bg-white border-2 border-gray-300 flex flex-col gap-2 sm:gap-3 rounded-none">
               <div class="flex items-center gap-2">

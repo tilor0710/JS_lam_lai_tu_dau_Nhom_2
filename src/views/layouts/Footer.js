@@ -3,10 +3,11 @@ import mapPinIcon from "lucide-static/icons/map-pin.svg";
 
 export class Footer {
   static getTemplate() {
-    return `
+    return /*html*/ `
+      <!-- Thông tin liên hệ và liên kết hỗ trợ -->
       <footer class="bg-[#0f172a] text-gray-300 border-t-4 border-[#b91c1c] mt-auto">
         <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
-          
+
           <div class="md:col-span-2 flex flex-col gap-3">
             <h3 class="font-['Oswald'] text-2xl font-bold text-white tracking-wider">
               QUICK<span class="text-[#f59e0b]">SHIP</span> LOGISTICS
@@ -49,6 +50,7 @@ export class Footer {
 
         </div>
 
+        <!-- Bản quyền và thông tin đơn vị -->
         <div class="max-w-7xl mx-auto px-4 py-4 border-t border-slate-800 text-xs text-gray-500 flex flex-col sm:flex-row justify-between items-center gap-2">
           <span>© 2026 QUICKSHIP ENTERPRISE. ALL RIGHTS RESERVED.</span>
           <span class="font-mono text-[11px] text-gray-600">INDUSTRIAL LOGISTICS SPECIFICATION</span>

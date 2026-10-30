@@ -14,33 +14,34 @@ export class LocateView extends BaseView {
   }
 
   getTemplate() {
-    return `
+    return /*html*/ `
       <section class="max-w-7xl mx-auto px-4 py-8">
-        
-        <!-- TIÊU ĐỀ GÓC CẠNH VỚI DẢI ĐỎ THƯƠNG HIỆU -->
+
+
         <div class="border-l-4 border-[#b91c1c] pl-4 mb-8">
           <span class="text-xs font-bold uppercase tracking-widest text-[#b91c1c]">Hạ tầng giao nhận toàn quốc</span>
           <h1 class="text-3xl sm:text-4xl font-bold font-['Oswald'] text-gray-900 uppercase tracking-wide mt-0.5">
             MẠNG LƯỚI BƯU CỤC QUICKSHIP
           </h1>
         </div>
-        
+
+        <!-- Tìm kiếm, danh sách và bản đồ bưu cục -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          <!-- CỘT TRÁI (5 phần): Tìm kiếm & Danh sách vuông vức -->
+
+
           <div class="lg:col-span-5 flex flex-col gap-4 bg-white p-5 border-2 border-gray-900 shadow-[6px_6px_0px_0px_#0f172a] rounded-none">
-            
+
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-bold uppercase tracking-wider text-gray-700">Tìm kiếm bưu cục gần nhất:</label>
               <div class="flex border-2 border-gray-900 focus-within:border-[#b91c1c] transition rounded-none">
-                <input 
-                  id="locate-search-input" 
-                  type="text" 
-                  placeholder="Nhập tên quận, thành phố hoặc địa chỉ..." 
+                <input
+                  id="locate-search-input"
+                  type="text"
+                  placeholder="Nhập tên quận, thành phố hoặc địa chỉ..."
                   class="flex-1 px-3.5 py-2.5 text-sm text-gray-900 outline-none bg-white rounded-none"
                 />
-                <button 
-                  id="locate-search-btn" 
+                <button
+                  id="locate-search-btn"
                   class="bg-[#b91c1c] hover:bg-[#991b1b] text-white px-5 py-2.5 text-xs font-['Oswald'] font-bold uppercase tracking-wider flex items-center gap-1.5 transition cursor-pointer border-l-2 border-gray-900 rounded-none shrink-0"
                 >
                   <img src="${searchIcon}" class="w-4 h-4 invert brightness-0" alt="" />
@@ -49,7 +50,7 @@ export class LocateView extends BaseView {
               </div>
             </div>
 
-            <!-- DANH SÁCH BƯU CỤC VUÔNG VỰC -->
+
             <div id="locate-list" class="flex flex-col gap-3 max-h-[460px] overflow-y-auto pr-1 mt-2">
               <div class="p-4 text-xs font-mono text-gray-500 uppercase tracking-wider border border-gray-200 text-center">
                 Đang tải dữ liệu mạng lưới bưu cục...
@@ -58,7 +59,7 @@ export class LocateView extends BaseView {
 
           </div>
 
-          <!-- CỘT PHẢI (7 phần): BẢN ĐỒ VUÔNG VỨC ĐỔ BÓNG ĐỎ ĐÔ -->
+
           <div class="lg:col-span-7 sticky top-4">
             <div class="border-2 border-gray-900 shadow-[6px_6px_0px_0px_#b91c1c] rounded-none overflow-hidden bg-gray-100">
               <div id="locate-map" class="h-[520px] w-full rounded-none z-0"></div>
@@ -122,7 +123,7 @@ export class LocateView extends BaseView {
     listContainer.innerHTML = "";
 
     if (this.locations.length === 0) {
-      listContainer.innerHTML = `
+      listContainer.innerHTML = /*html*/ `
         <div class="p-6 text-center text-xs font-bold uppercase tracking-wider text-[#b91c1c] bg-red-50 border-2 border-[#b91c1c] rounded-none">
           Không tìm thấy bưu cục nào phù hợp!
         </div>
@@ -132,12 +133,9 @@ export class LocateView extends BaseView {
 
     this.locations.forEach((loc) => {
       const card = document.createElement("div");
-      // Style thẻ bưu cục: Góc vuông, hover đổ bóng cứng viền đỏ
       card.className =
         "p-4 bg-white border-2 border-gray-200 hover:border-[#b91c1c] hover:shadow-[4px_4px_0px_0px_#b91c1c] transition-all cursor-pointer rounded-none flex flex-col gap-1.5 group";
-
-      // Đã thay thế toàn bộ emoji bằng Lucide Icons
-      card.innerHTML = `
+      card.innerHTML = /*html*/ `
         <div class="flex items-start justify-between gap-2">
           <h3 class="font-['Oswald'] font-bold text-sm tracking-wide text-gray-900 uppercase group-hover:text-[#b91c1c] transition">
             ${loc.name}
@@ -178,8 +176,7 @@ export class LocateView extends BaseView {
         const marker = window.L.marker([loc.lat, loc.lng]).addTo(
           this.markersLayer,
         );
-        // Popup trên bản đồ cũng thiết kế theo phong cách vuông vức dứt khoát
-        marker.bindPopup(`
+        marker.bindPopup(/*html*/ `
           <div style="font-family: 'Asap', sans-serif; font-size: 12px; padding: 2px;">
             <div style="font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 14px; color: #b91c1c; text-transform: uppercase;">
               ${loc.name}

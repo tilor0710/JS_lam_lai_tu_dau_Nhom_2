@@ -5,9 +5,7 @@ export class RateService extends BaseService {
     super(rateModel);
   }
 
-  /**
-   * Nghiệp vụ tính toán cước phí vận chuyển
-   */
+
   async calculate({
     scope = "DOMESTIC",
     itemType = "PACKAGE",
@@ -18,8 +16,6 @@ export class RateService extends BaseService {
     if (weight <= 0) {
       throw new Error("Khối lượng hàng gửi phải lớn hơn 0 kg!");
     }
-
-    // 1. Lấy bảng cước động từ db.json
     const rates = await this.model.getDefaultRates();
     if (!rates) {
       throw new Error("Không thể truy xuất bảng cước từ hệ thống!");
@@ -27,8 +23,6 @@ export class RateService extends BaseService {
 
     let basePrice = 0;
     let estimatedDays = "";
-
-    // 2. Phân loại Thư từ (Mail) vs Bưu kiện (Package)
     if (itemType === "MAIL") {
       basePrice =
         scope === "DOMESTIC"
@@ -37,15 +31,10 @@ export class RateService extends BaseService {
       estimatedDays =
         scope === "DOMESTIC" ? "1 - 2 ngày làm việc" : "5 - 7 ngày làm việc";
     } else {
-      // Tính theo kích cỡ
       basePrice = rates.packages[size] || rates.packages.SMALL;
-
-      // Phụ phí vượt cân: Mỗi 1kg vượt quá mức 1kg đầu tiên
       if (weight > 1) {
         basePrice += Math.ceil(weight - 1) * rates.extraPerKg;
       }
-
-      // Nếu gửi đi Quốc tế
       if (scope === "OVERSEAS") {
         basePrice = basePrice * rates.overseasMultiplier;
         estimatedDays = "5 - 10 ngày làm việc";

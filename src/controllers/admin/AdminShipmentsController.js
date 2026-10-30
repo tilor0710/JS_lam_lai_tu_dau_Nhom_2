@@ -1,0 +1,70 @@
+import { BaseController } from "../../base/baseController.js";
+import { AdminShipmentsView } from "../../views/pages/admin/AdminShipmentsView.js";
+import { AdminLayout } from "../../views/layouts/admin/AdminLayout.js";
+import { ShipmentModel } from "../../models/ShipmentModel.js";
+
+export class AdminShipmentsController extends BaseController {
+  constructor() {
+    const view = new AdminShipmentsView();
+    super(null, view, false);
+    this.shipmentModel = new ShipmentModel();
+  }
+
+  async init() {
+    const renderPage = async () => {
+      const shipments = await this.shipmentModel.getAll();
+      AdminLayout.render(this.view.getTemplate(shipments), "shipments");
+      this.view.run();
+    };
+    this.view.onCreateShipment = async (data) => {
+      const randomCode = `SP${Math.floor(100000000 + Math.random() * 900000000)}VN`;
+      const now = new Date().toISOString().replace("T", " ").substring(0, 16);
+
+      const newShipment = {
+        id: randomCode,
+        ...data,
+        currentStatus: "RECEIVED",
+        weightKg: 1.0,
+        size: "MEDIUM",
+        events: [
+          {
+            time: now,
+            location: data.sender,
+            status: "Bưu gửi mới tạo tại quầy",
+          },
+        ],
+      };
+
+      await this.shipmentModel.post(newShipment);
+      alert(`Đã tạo thành công vận đơn: ${randomCode}`);
+      await renderPage();
+    };
+    this.view.onAddEvent = async (id, eventData) => {
+      const now = new Date().toISOString().replace("T", " ").substring(0, 16);
+      const currentShipment = await this.shipmentModel.getOne(id);
+
+      if (currentShipment) {
+        const updatedEvents = [
+          ...(currentShipment.events || []),
+          { time: now, location: eventData.location, status: eventData.status },
+        ];
+
+        let statusMap = "IN_TRANSIT";
+        if (eventData.status.includes("Giao hàng thành công"))
+          statusMap = "DELIVERED";
+        if (eventData.status.includes("Đang phát"))
+          statusMap = "OUT_FOR_DELIVERY";
+
+        await this.shipmentModel.patch(id, {
+          events: updatedEvents,
+          currentStatus: statusMap,
+        });
+
+        alert(`Đã cập nhật chặng mới cho đơn ${id}!`);
+        await renderPage();
+      }
+    };
+
+    await renderPage();
+  }
+}

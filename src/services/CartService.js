@@ -3,9 +3,7 @@ import { CartModel } from "../models/CartModel.js";
 
 const MAX_QTY_PER_ITEM = 99;
 
-/**
- * Lưu productId và quantity trong db.json; thông tin sản phẩm được lấy từ products.
- */
+
 export class CartService extends BaseService {
   constructor(cartModel) {
     super(cartModel);

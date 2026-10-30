@@ -14,13 +14,8 @@ export class CalculateRatesController extends BaseController {
   }
 
   async init() {
-    // 1. Render Header đỏ và Footer
     Layout.render(false);
-
-    // 2. Render khung HTML trang tính cước
     this.view.render();
-
-    // 3. Lắng nghe người dùng bấm nút Tính cước
     this.view.onCalculate = async (payload) => {
       this.view.showLoading();
 

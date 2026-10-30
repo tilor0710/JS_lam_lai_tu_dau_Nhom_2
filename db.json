@@ -1,20 +1,12 @@
 {
   "users": [
     {
-      "id": 1,
       "email": "admin@quickship.com",
-      "password": "password123",
+      "password": "$2a$10$2w9YyLHYBJd5xq/i.g4xMuHheCKj5bIw5iYx6jUHnO7WzphMgzcJu",
       "role": "ADMIN",
       "name": "Quản trị viên QuickShip",
-      "phone": "0909123456"
-    },
-    {
-      "id": 2,
-      "email": "user@gmail.com",
-      "password": "password123",
-      "role": "USER",
-      "name": "Nguyễn Văn A",
-      "phone": "0988776655"
+      "phone": "0909123456",
+      "id": 1
     }
   ],
   "products": [

@@ -22,14 +22,14 @@ const escapeHTML = (value) =>
 export class ShopView extends BaseView {
   constructor() {
     super("#app-content");
-    this.onAddToCart = null; // Cung cấp callback cho bạn cùng team gắn giỏ hàng
+    this.onAddToCart = null;
   }
 
   getTemplate({ products = [], error = "" } = {}) {
-    return `
+    return /*html*/ `
       <section class="max-w-7xl mx-auto px-4 py-8">
-        
-        <!-- HEADER TRANG CỬA HÀNG -->
+
+
         <div class="border-b-2 border-gray-900 pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div class="border-l-4 border-[#b91c1c] pl-4">
             <span class="text-xs font-bold uppercase tracking-widest text-[#b91c1c]">Vật tư đóng gói bưu chính</span>
@@ -41,7 +41,8 @@ export class ShopView extends BaseView {
             </p>
           </div>
 
-          <!-- THANH LỌC DANH MỤC GÓC CẠNH -->
+
+          <!-- Bộ lọc danh mục vật tư -->
           <div class="flex items-center gap-1.5 flex-wrap">
             <span class="bg-gray-900 text-white text-[11px] font-['Oswald'] font-bold px-3 py-1.5 uppercase tracking-wider flex items-center gap-1 rounded-none">
               <img src="${filterIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
@@ -59,18 +60,19 @@ export class ShopView extends BaseView {
           </div>
         </div>
 
-        <!-- LƯỚI SẢN PHẨM VUÔNG VỨC CÔNG NGHIỆP (3 - 4 CỘT) -->
+
+        <!-- Danh sách sản phẩm trong cửa hàng -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           ${
             error
-              ? `<p role="alert" class="sm:col-span-2 lg:col-span-3 text-center text-sm text-red-700">${escapeHTML(error)}</p>`
+              ? /*html*/ `<p role="alert" class="sm:col-span-2 lg:col-span-3 text-center text-sm text-red-700">${escapeHTML(error)}</p>`
               : products.length
                 ? products.map((product) => this.#getProductTemplate(product)).join("")
-                : `<p class="sm:col-span-2 lg:col-span-3 text-center text-sm text-gray-600">Chưa có sản phẩm nào.</p>`
+                : /*html*/ `<p class="sm:col-span-2 lg:col-span-3 text-center text-sm text-gray-600">Chưa có sản phẩm nào.</p>`
           }
         </div>
 
-        <!-- THÔNG BÁO TIÊU CHUẨN GÓC CẠNH PHÍA DƯỚI -->
+
         <div class="mt-12 p-6 bg-white border-2 border-gray-900 shadow-[4px_4px_0px_0px_#f59e0b] rounded-none flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <div class="bg-[#b91c1c] p-2 text-white shrink-0">
@@ -108,15 +110,16 @@ export class ShopView extends BaseView {
       currency: "VND",
     }).format(product.price);
 
-    return `
+    return /*html*/ `
+            <!-- Thông tin sản phẩm và nút thêm vào giỏ hàng -->
             <div class="bg-white border-2 border-gray-900 shadow-[4px_4px_0px_0px_#0f172a] hover:shadow-[6px_6px_0px_0px_#b91c1c] hover:border-[#b91c1c] transition-all rounded-none flex flex-col justify-between p-4 group">
-              
+
               <div>
-                <!-- Khung ảnh sắc nét góc vuông -->
+
                 <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden border-2 border-gray-900">
-                  <img 
-                    src="${image}" 
-                    alt="${name}" 
+                  <img
+                    src="${image}"
+                    alt="${name}"
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <span class="absolute top-2 left-2 bg-[#0f172a] text-[#f59e0b] text-[10px] font-mono font-bold px-2 py-0.5 uppercase tracking-wider">
@@ -124,7 +127,7 @@ export class ShopView extends BaseView {
                   </span>
                 </div>
 
-                <!-- Tên sản phẩm & Quy cách -->
+
                 <h3 class="font-['Oswald'] font-bold text-base text-gray-900 uppercase tracking-wide group-hover:text-[#b91c1c] transition mt-3 line-clamp-2">
                   ${name}
                 </h3>
@@ -133,7 +136,7 @@ export class ShopView extends BaseView {
                 </p>
               </div>
 
-              <!-- Giá tiền & Nút Thêm vào giỏ -->
+
               <div class="mt-4 pt-3 border-t-2 border-gray-100 flex flex-col gap-2.5">
                 <div class="flex justify-between items-baseline">
                   <span class="text-[11px] uppercase tracking-wide text-gray-500">Đơn giá:</span>
@@ -142,8 +145,8 @@ export class ShopView extends BaseView {
                   </span>
                 </div>
 
-                <!-- NÚT BẤM CÓ SẴN DATA ATTRIBUTES CHO TEAM GIỎ HÀNG BẮT SỰ KIỆN -->
-                <button 
+
+                <button
                   type="button"
                   data-product-id="${product.id}"
                   data-product-name="${name}"
@@ -181,10 +184,10 @@ export class ShopView extends BaseView {
             throw new Error("Chưa đăng ký xử lý thêm sản phẩm vào giỏ hàng.");
           }
           await this.onAddToCart(productData);
-          targetBtn.innerHTML = `<span>✓ Đã thêm vào giỏ</span>`;
+          targetBtn.innerHTML = /*html*/ `<span>✓ Đã thêm vào giỏ</span>`;
         } catch (error) {
           console.error("[ShopView Error]: Không lưu được giỏ hàng:", error);
-          targetBtn.innerHTML = `<span>Không thể thêm, thử lại</span>`;
+          targetBtn.innerHTML = /*html*/ `<span>Không thể thêm, thử lại</span>`;
         } finally {
           targetBtn.classList.replace("bg-gray-900", "bg-[#b91c1c]");
           setTimeout(() => {

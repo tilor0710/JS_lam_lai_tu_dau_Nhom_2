@@ -4,10 +4,11 @@ import userIcon from "lucide-static/icons/user.svg";
 
 export class ShopHeader {
   static getTemplate() {
-    return `
+    return /*html*/ `
+      <!-- Header cửa hàng: thương hiệu, giỏ hàng và tài khoản -->
       <header class="bg-white border-b-2 border-[#f59e0b] sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 h-18 flex items-center justify-between">
-          
+
           <div class="flex items-center gap-4">
             <a href="#/shop" class="font-['Oswald'] font-bold text-2xl uppercase tracking-wider text-gray-900 flex items-center gap-2">
               <span class="bg-[#f59e0b] text-gray-900 px-2 py-0.5 text-lg font-extrabold">SHOP</span>
@@ -20,14 +21,14 @@ export class ShopHeader {
           </div>
 
           <div class="flex items-center gap-3">
-            <!-- Nút giỏ hàng góc vuông -->
+
             <a href="#/cart" class="border border-gray-300 px-4 py-2 flex items-center gap-2 hover:border-[#b91c1c] transition text-sm font-bold text-gray-800">
               <img src="${shoppingBagIcon}" class="w-4 h-4 text-gray-700" alt="" />
               <span>Giỏ hàng</span>
               <span data-role="cart-count" class="bg-[#b91c1c] text-white text-xs px-1.5 py-0.2 font-mono">0</span>
             </a>
 
-            <!-- Nút Auth -->
+
             <a href="#/auth" class="bg-[#b91c1c] hover:bg-[#991b1b] text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5">
               <img src="${userIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
               <span>Tài khoản</span>
