@@ -4,6 +4,7 @@ import { LocateController } from "../controllers/locate/LocateController.js";
 import { ShopController } from "../controllers/shop/ShopController.js";
 import { CartController } from "../controllers/cart/cartController.js";
 import { CalculateRatesController } from "../controllers/calculate/CalculateRatesController.js";
+import { AuthController } from "../controllers/auth/AuthController.js";
 
 export const router = new Navigo("/", { hash: true });
 
@@ -33,6 +34,10 @@ export const initRouter = () => {
     .on("/cart", () => {
       const cartCtrl = new CartController();
       cartCtrl.init();
+    })
+    .on("/auth", () => {
+      const authCtrl = new AuthController();
+      authCtrl.init();
     })
     // Trang 404 góc cạnh
     .notFound(() => {

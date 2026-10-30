@@ -24,6 +24,7 @@ export class CartView extends BaseView {
     this.onUpdateQuantity = null; // (id, quantity) => void
     this.onRemove = null; // (id) => void
     this.onClear = null; // () => void
+    this.onCheckout = null;
   }
 
   getTemplate({
@@ -129,6 +130,16 @@ export class CartView extends BaseView {
 
           <p class="text-[11px] text-gray-500 mt-3">
             Phí vận chuyển (nếu có) sẽ được tính ở bước thanh toán.
+          </p>
+          <button
+            type="button"
+            data-action="checkout"
+            class="w-full mt-5 bg-[#b91c1c] hover:bg-[#991b1b] text-white py-3 font-['Oswald'] text-sm font-bold uppercase tracking-wider border-b-2 border-[#f59e0b] transition cursor-pointer"
+          >
+            Thanh toán
+          </button>
+          <p class="text-[10px] text-gray-500 text-center mt-2">
+            Cần đăng nhập hoặc đăng ký để thanh toán.
           </p>
         </aside>
 
@@ -271,6 +282,10 @@ export class CartView extends BaseView {
           this.onClear?.();
         }
       });
+
+    root
+      .querySelector('[data-action="checkout"]')
+      ?.addEventListener("click", () => this.onCheckout?.());
   }
 
   updateItem(item, totalQuantity, totalPrice) {

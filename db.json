@@ -15,6 +15,11 @@
       "role": "USER",
       "name": "Nguyễn Văn A",
       "phone": "0988776655"
+    },
+    {
+      "email": "admin@gmail.com",
+      "password": "$2a$10$swfZBv3hSkOPohKtuLuQEO54l8kxftY4qQZzSKnUYdPNzTzfqam0u",
+      "id": 3
     }
   ],
   "products": [
