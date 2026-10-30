@@ -4,6 +4,7 @@ import { Layout } from "../../views/layouts/Layout.js";
 import { ProductModel } from "../../models/ProductModel.js";
 import { ProductService } from "../../services/ProductService.js";
 import { cartService } from "../../services/CartService.js";
+import { router } from "../../routers/index.js";
 
 export class ShopController extends BaseController {
     constructor() {
@@ -19,24 +20,26 @@ export class ShopController extends BaseController {
             await cartService.addItem(product);
         };
 
-        this.view.onBuyNow = (productId) => {
+        this.view.onProductSelect = (productId) => {
             const id = Number(productId);
             if (!Number.isInteger(id) || id <= 0) {
-                alert("Sản phẩm không hợp lệ.");
+                console.error("[ShopController Error]: ID sản phẩm không hợp lệ.");
                 return;
             }
 
-            window.location.hash = `#/shop/detail?id=${id}`;
+            router.navigate(`/shop/detail?id=${id}`);
         };
 
         this.view.onFilterChange = ({
             searchTerm,
             selectedCategory,
             sortBy,
+            page,
         }) => {
             this.view.searchTerm = searchTerm;
             this.view.selectedCategory = selectedCategory;
             this.view.sortBy = sortBy;
+            this.view.currentPage = page ?? 1;
 
             const products = this.view.getVisibleProducts();
             this.view.render({

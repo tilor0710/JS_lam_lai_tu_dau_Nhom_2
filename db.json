@@ -7,6 +7,14 @@
       "name": "Quản trị viên QuickShip",
       "phone": "0909123456",
       "id": 1
+    },
+    {
+      "email": "user552@gmail.com",
+      "password": "$2a$10$0Jyp/XUmXk6hHdoNGbexvuFaROnpXj6Bfwzs.GQQPAIfg7UEwcqFO",
+      "name": "user552",
+      "phone": "123456789",
+      "role": "USER",
+      "id": 2
     }
   ],
   "products": [
@@ -28,7 +36,7 @@
       "name": "Thùng Carton Size L (45x35x20 cm)",
       "category": "BOXES",
       "price": 35000,
-      "stock": 300,
+      "stock": 296,
       "dimensions": {
         "length": 45,
         "width": 35,
@@ -41,7 +49,7 @@
       "name": "Bì thư chống sốc Poly Bubble Mailer (25x18 cm)",
       "category": "ENVELOPES",
       "price": 12000,
-      "stock": 1000,
+      "stock": 999,
       "dimensions": {
         "length": 25,
         "width": 18,
@@ -170,12 +178,7 @@
   "carts": [
     {
       "id": 1,
-      "items": [
-        {
-          "productId": 2,
-          "quantity": 1
-        }
-      ]
+      "items": []
     }
   ],
   "shipments": [
@@ -356,6 +359,33 @@
         }
       ],
       "createdAt": "2026-10-26T10:15:00Z"
+    },
+    {
+      "userId": 2,
+      "customerName": "user552",
+      "phone": "123456789",
+      "email": "user552@gmail.com",
+      "shippingAddress": "âsdsadasdasdas",
+      "note": "adasdas",
+      "paymentMethod": "COD",
+      "paymentStatus": "UNPAID",
+      "status": "PENDING",
+      "totalAmount": 152000,
+      "shippingFee": null,
+      "items": [
+        {
+          "productId": 2,
+          "quantity": 4,
+          "price": 35000
+        },
+        {
+          "productId": 3,
+          "quantity": 1,
+          "price": 12000
+        }
+      ],
+      "createdAt": "2026-10-30T14:01:29.565Z",
+      "id": 2
     }
   ]
 }

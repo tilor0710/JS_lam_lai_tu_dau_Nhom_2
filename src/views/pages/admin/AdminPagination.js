@@ -34,10 +34,18 @@ export const getPaginationPages = (currentPage, totalPages) => {
   return pages;
 };
 
-export const getPaginationTemplate = (totalItems, currentPage) => {
-  const totalPages = Math.ceil(totalItems / ADMIN_PAGE_SIZE);
-  const firstItem = totalItems === 0 ? 0 : (currentPage - 1) * ADMIN_PAGE_SIZE + 1;
-  const lastItem = Math.min(currentPage * ADMIN_PAGE_SIZE, totalItems);
+export const getPaginationTemplate = (
+  totalItems,
+  currentPage,
+  {
+    pageSize = ADMIN_PAGE_SIZE,
+    containerId = "admin-pagination",
+    ariaLabel = "Phân trang",
+  } = {},
+) => {
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const firstItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const lastItem = Math.min(currentPage * pageSize, totalItems);
   const pageButtons = getPaginationPages(currentPage, totalPages)
     .map((page) =>
       typeof page === "number"
@@ -69,7 +77,7 @@ export const getPaginationTemplate = (totalItems, currentPage) => {
       ${
         totalPages > 1
           ? /*html*/ `
-            <nav id="admin-pagination" aria-label="Phân trang" class="flex flex-wrap items-center justify-center gap-1">
+            <nav id="${containerId}" aria-label="${ariaLabel}" class="flex flex-wrap items-center justify-center gap-1">
               <button
                 type="button"
                 data-page="${currentPage - 1}"

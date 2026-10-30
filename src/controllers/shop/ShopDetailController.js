@@ -12,16 +12,16 @@ export class ShopDetailController extends BaseController {
         super(productService, view);
     }
 
-    #getProductIdFromUrl() {
-        const hashQuery = window.location.hash.split("?")[1] || "";
-        const queryString = hashQuery || window.location.search.slice(1);
-        const params = new URLSearchParams(queryString);
+    #getProductIdFromUrl(match) {
+        const params = new URLSearchParams(
+            match?.queryString ?? window.location.search.slice(1),
+        );
         const productId = Number(params.get("id"));
 
         return Number.isInteger(productId) && productId > 0 ? productId : null;
     }
 
-    async init() {
+    async init(match) {
         Layout.render(true);
 
         this.view.onAddToCart = async (product, quantity) => {
@@ -34,7 +34,7 @@ export class ShopDetailController extends BaseController {
             alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng.`);
         };
 
-        const productId = this.#getProductIdFromUrl();
+        const productId = this.#getProductIdFromUrl(match);
 
         this.view.render({ loading: true });
 
@@ -49,6 +49,7 @@ export class ShopDetailController extends BaseController {
             }
 
             this.view.currentProduct = product;
+            document.title = `${product.name} | QuickShip`;
             this.view.render({ product });
         } catch (error) {
             this.view.render({

@@ -31,7 +31,7 @@ export class HeroSection {
               </p>
 
               <div>
-                <a href="#/shop" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#f59e0b] hover:bg-[#d97706] text-gray-900 font-['Oswald'] font-bold uppercase text-xs sm:text-sm px-5 sm:px-6 py-3 border-2 border-gray-900 shadow-[3px_3px_0px_0px_#0f172a] sm:shadow-[4px_4px_0px_0px_#0f172a] transition hover:translate-x-0.5 hover:translate-y-0.5">
+                <a href="/shop" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#f59e0b] hover:bg-[#d97706] text-gray-900 font-['Oswald'] font-bold uppercase text-xs sm:text-sm px-5 sm:px-6 py-3 border-2 border-gray-900 shadow-[3px_3px_0px_0px_#0f172a] sm:shadow-[4px_4px_0px_0px_#0f172a] transition hover:translate-x-0.5 hover:translate-y-0.5">
                   <span>Khám phá kho vật tư đóng gói</span>
                   <img src="${arrowRightIcon}" class="w-4 h-4" alt="" />
                 </a>
@@ -79,7 +79,7 @@ export class HeroSection {
 
 
                 <div class="grid grid-cols-1 gap-1.5 sm:gap-2 pt-2 border-t border-gray-200">
-                  <a href="#/calculate-rates" class="flex items-center justify-between p-2.5 sm:p-3 border border-gray-200 hover:border-[#b91c1c] hover:bg-red-50/30 transition group rounded-none">
+                  <a href="/calculate-rates" class="flex items-center justify-between p-2.5 sm:p-3 border border-gray-200 hover:border-[#b91c1c] hover:bg-red-50/30 transition group rounded-none">
                     <div class="flex items-center gap-2.5 sm:gap-3">
                       <div class="bg-gray-100 p-1.5 group-hover:bg-[#b91c1c] transition">
                         <img src="${calculatorIcon}" class="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:invert group-hover:brightness-0" alt="" />
@@ -89,7 +89,7 @@ export class HeroSection {
                     <span class="text-gray-400 group-hover:text-[#b91c1c] text-xs font-bold">➔</span>
                   </a>
 
-                  <a href="#/locate-us" class="flex items-center justify-between p-2.5 sm:p-3 border border-gray-200 hover:border-[#b91c1c] hover:bg-red-50/30 transition group rounded-none">
+                  <a href="/locate-us" class="flex items-center justify-between p-2.5 sm:p-3 border border-gray-200 hover:border-[#b91c1c] hover:bg-red-50/30 transition group rounded-none">
                     <div class="flex items-center gap-2.5 sm:gap-3">
                       <div class="bg-gray-100 p-1.5 group-hover:bg-[#b91c1c] transition">
                         <img src="${mapPinIcon}" class="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:invert group-hover:brightness-0" alt="" />
@@ -99,7 +99,7 @@ export class HeroSection {
                     <span class="text-gray-400 group-hover:text-[#b91c1c] text-xs font-bold">➔</span>
                   </a>
 
-                  <a href="#/find-postal-code" class="flex items-center justify-between p-2.5 sm:p-3 border border-gray-200 hover:border-[#b91c1c] hover:bg-red-50/30 transition group rounded-none">
+                  <a href="/find-postal-code" class="flex items-center justify-between p-2.5 sm:p-3 border border-gray-200 hover:border-[#b91c1c] hover:bg-red-50/30 transition group rounded-none">
                     <div class="flex items-center gap-2.5 sm:gap-3">
                       <div class="bg-gray-100 p-1.5 group-hover:bg-[#b91c1c] transition">
                         <img src="${mailboxIcon}" class="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:invert group-hover:brightness-0" alt="" />
@@ -126,7 +126,7 @@ export class HeroSection {
               <p class="text-[11px] sm:text-xs text-gray-600 leading-relaxed">
                 Giải pháp gửi kiện hàng nội địa và quốc tế dứt khoát, an toàn với quy trình theo dõi mã vạch chính xác.
               </p>
-              <a href="#/shop" class="text-xs font-bold uppercase text-[#b91c1c] hover:underline flex items-center gap-1 mt-1">
+              <a href="/shop" class="text-xs font-bold uppercase text-[#b91c1c] hover:underline flex items-center gap-1 mt-1">
                 Vật tư đóng gói ➔
               </a>
             </div>
@@ -139,7 +139,7 @@ export class HeroSection {
               <p class="text-[11px] sm:text-xs text-gray-600 leading-relaxed">
                 Chủ động nhận bưu gửi tại các điểm bưu cục trên toàn quốc với thời gian lưu kho linh hoạt.
               </p>
-              <a href="#/locate-us" class="text-xs font-bold uppercase text-[#b91c1c] hover:underline flex items-center gap-1 mt-1">
+              <a href="/locate-us" class="text-xs font-bold uppercase text-[#b91c1c] hover:underline flex items-center gap-1 mt-1">
                 Xem điểm bưu cục ➔
               </a>
             </div>

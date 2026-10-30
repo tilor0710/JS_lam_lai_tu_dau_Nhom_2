@@ -4,6 +4,7 @@ import { cartService } from "../../services/CartService.js";
 import { ProductModel } from "../../models/ProductModel.js";
 import { ProductService } from "../../services/ProductService.js";
 import { Layout } from "../../views/layouts/Layout.js";
+import { router } from "../../routers/index.js";
 
 export class CartController extends BaseController {
   constructor() {
@@ -13,6 +14,7 @@ export class CartController extends BaseController {
 
   async init() {
     Layout.render(true);
+    this.view.onCheckout = () => router.navigate("/checkout");
 
     this.view.onUpdateQuantity = async (id, quantity) => {
       try {

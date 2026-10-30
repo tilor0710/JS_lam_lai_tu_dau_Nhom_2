@@ -70,10 +70,10 @@ export class UserDashboardView extends BaseView {
             </div>
 
             <div class="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2">
-              <a href="#/shop" class="w-full text-center py-2.5 bg-gray-900 hover:bg-[#b91c1c] text-white text-xs font-['Oswald'] font-bold uppercase tracking-wider transition rounded-none">
+              <a href="/shop" class="w-full text-center py-2.5 bg-gray-900 hover:bg-[#b91c1c] text-white text-xs font-['Oswald'] font-bold uppercase tracking-wider transition rounded-none">
                 Đặt mua vật tư đóng gói ➔
               </a>
-              <a href="#/" class="w-full text-center py-2.5 border-2 border-gray-900 text-gray-900 hover:bg-gray-100 text-xs font-['Oswald'] font-bold uppercase tracking-wider transition rounded-none">
+              <a href="/" class="w-full text-center py-2.5 border-2 border-gray-900 text-gray-900 hover:bg-gray-100 text-xs font-['Oswald'] font-bold uppercase tracking-wider transition rounded-none">
                 Tra cứu bưu gửi khác
               </a>
             </div>
@@ -117,7 +117,7 @@ export class UserDashboardView extends BaseView {
                   </div>
                   <p class="text-xs text-gray-600 mt-1">Hà Nội Hub ➔ Nguyễn Văn A - TP.HCM</p>
                 </div>
-                <a href="#/" class="text-xs font-['Oswald'] font-bold uppercase text-[#b91c1c] hover:underline">
+                <a href="/" class="text-xs font-['Oswald'] font-bold uppercase text-[#b91c1c] hover:underline">
                   Xem lộ trình ➔
                 </a>
               </div>

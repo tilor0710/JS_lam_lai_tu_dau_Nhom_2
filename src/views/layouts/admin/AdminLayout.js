@@ -1,6 +1,7 @@
 import { AdminSidebar } from "./AdminSidebar.js";
 import logOutIcon from "lucide-static/icons/log-out.svg";
 import menuIcon from "lucide-static/icons/menu.svg";
+import { router } from "../../../routers/index.js";
 
 export class AdminLayout {
   static render(contentHtml, activeTab = "dashboard") {
@@ -75,10 +76,11 @@ export class AdminLayout {
       `;
       document
         .querySelector("#btn-admin-logout")
-        ?.addEventListener("click", () => {
+        ?.addEventListener("click", (event) => {
+          event.preventDefault();
           localStorage.removeItem("quickship_current_user");
           localStorage.removeItem("quickship_jwt_token");
-          window.location.hash = "#/auth";
+          router.navigate("/auth");
         });
 
       const mobileSidebar = document.querySelector("#admin-mobile-sidebar");

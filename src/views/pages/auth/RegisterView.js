@@ -92,7 +92,7 @@ export class RegisterView extends BaseView {
 
           <div class="mt-6 pt-4 border-t-2 border-gray-100 text-center text-xs text-gray-600">
             Đã có tài khoản?
-            <a href="#/auth" class="font-bold text-[#b91c1c] uppercase hover:underline ml-1 inline-flex items-center gap-0.5">
+            <a href="/auth" class="font-bold text-[#b91c1c] uppercase hover:underline ml-1 inline-flex items-center gap-0.5">
               <img src="${arrowLeftIcon}" class="w-3 h-3 text-[#b91c1c]" alt="" /> Đăng nhập
             </a>
           </div>

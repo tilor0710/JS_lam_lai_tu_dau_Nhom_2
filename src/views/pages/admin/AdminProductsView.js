@@ -58,15 +58,31 @@ export class AdminProductsView extends BaseView {
             </div>
             <div class="flex flex-col gap-1">
               <label>Giá bán (VND):</label>
-              <input id="prod-price" type="number" required value="25000" class="border-2 border-gray-900 p-2 text-xs font-mono font-medium text-gray-900 outline-none rounded-none" />
+              <input id="prod-price" type="number" min="0" required value="25000" class="border-2 border-gray-900 p-2 text-xs font-mono font-medium text-gray-900 outline-none rounded-none" />
             </div>
             <div class="flex flex-col gap-1">
               <label>Tồn kho ban đầu:</label>
-              <input id="prod-stock" type="number" required value="100" class="border-2 border-gray-900 p-2 text-xs font-mono font-medium text-gray-900 outline-none rounded-none" />
+              <input id="prod-stock" type="number" min="0" required value="100" class="border-2 border-gray-900 p-2 text-xs font-mono font-medium text-gray-900 outline-none rounded-none" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label>Dài (cm):</label>
+              <input id="prod-length" type="number" min="1" step="any" required value="30" class="border-2 border-gray-900 p-2 text-xs font-mono font-medium text-gray-900 outline-none rounded-none" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label>Rộng (cm):</label>
+              <input id="prod-width" type="number" min="1" step="any" required value="20" class="border-2 border-gray-900 p-2 text-xs font-mono font-medium text-gray-900 outline-none rounded-none" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label>Cao (cm):</label>
+              <input id="prod-height" type="number" min="1" step="any" required value="10" class="border-2 border-gray-900 p-2 text-xs font-mono font-medium text-gray-900 outline-none rounded-none" />
             </div>
             <div class="flex flex-col gap-1 sm:col-span-3">
               <label>Link ảnh sản phẩm (URL):</label>
               <input id="prod-image" type="url" required value="https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=400" class="border-2 border-gray-900 p-2 text-xs font-mono font-medium text-gray-900 outline-none rounded-none" />
+            </div>
+            <div class="flex flex-col gap-1 sm:col-span-2 lg:col-span-4">
+              <label>Mô tả sản phẩm:</label>
+              <textarea id="prod-description" required minlength="3" rows="3" placeholder="Mô tả chất liệu, công dụng và quy cách đóng gói..." class="resize-y border-2 border-gray-900 p-2 text-xs font-medium normal-case leading-5 text-gray-900 outline-none rounded-none"></textarea>
             </div>
             <div class="sm:col-span-2 lg:col-span-4 flex justify-end gap-2 pt-2 border-t border-gray-200">
               <button type="button" id="btn-cancel-prod" class="px-4 py-2 border-2 border-gray-400 text-gray-600 font-['Oswald'] text-xs font-bold uppercase rounded-none hover:bg-gray-100 cursor-pointer">Hủy</button>
@@ -144,9 +160,16 @@ export class AdminProductsView extends BaseView {
         const payload = {
           name: document.querySelector("#prod-name")?.value || "",
           category: document.querySelector("#prod-cat")?.value || "BOXES",
-          price: Number(document.querySelector("#prod-price")?.value) || 20000,
-          stock: Number(document.querySelector("#prod-stock")?.value) || 50,
+          price: Number(document.querySelector("#prod-price")?.value),
+          stock: Number(document.querySelector("#prod-stock")?.value),
           image: document.querySelector("#prod-image")?.value || "",
+          description:
+            document.querySelector("#prod-description")?.value.trim() || "",
+          dimensions: {
+            length: Number(document.querySelector("#prod-length")?.value),
+            width: Number(document.querySelector("#prod-width")?.value),
+            height: Number(document.querySelector("#prod-height")?.value),
+          },
         };
         if (this.onCreateProduct) this.onCreateProduct(payload);
       });

@@ -17,11 +17,11 @@ export class Footer {
             </p>
             <div class="flex items-center gap-3 mt-2 text-xs text-[#f59e0b] font-bold uppercase tracking-wider">
               <span class="flex items-center gap-1.5">
-                <img src="${phoneCallIcon}" class="w-4 h-4" alt="" /> Hotline: 1900 9999
+                <img src="${phoneCallIcon}" class="w-4 h-4" style="filter: invert(69%) sepia(84%) saturate(458%) hue-rotate(359deg) brightness(101%) contrast(96%)" alt="" /> Hotline: 1900 9999
               </span>
               <span>•</span>
               <span class="flex items-center gap-1.5">
-                <img src="${mapPinIcon}" class="w-4 h-4" alt="" /> Toàn quốc
+                <img src="${mapPinIcon}" class="w-4 h-4" style="filter: invert(69%) sepia(84%) saturate(458%) hue-rotate(359deg) brightness(101%) contrast(96%)" alt="" /> Toàn quốc
               </span>
             </div>
           </div>
@@ -31,9 +31,9 @@ export class Footer {
               Dịch vụ bưu chính
             </h4>
             <ul class="flex flex-col gap-2.5 text-xs font-medium uppercase tracking-wide">
-              <li><a href="#/track" class="hover:text-[#f59e0b] transition">Tra cứu bưu gửi</a></li>
-              <li><a href="#/calculate-rates" class="hover:text-[#f59e0b] transition">Tính cước vận chuyển</a></li>
-              <li><a href="#/locate-us" class="hover:text-[#f59e0b] transition">Mạng lưới bưu cục</a></li>
+              <li><a href="/track" class="hover:text-[#f59e0b] transition">Tra cứu bưu gửi</a></li>
+              <li><a href="/calculate-rates" class="hover:text-[#f59e0b] transition">Tính cước vận chuyển</a></li>
+              <li><a href="/locate-us" class="hover:text-[#f59e0b] transition">Mạng lưới bưu cục</a></li>
             </ul>
           </div>
 
@@ -42,9 +42,9 @@ export class Footer {
               Hỗ trợ khách hàng
             </h4>
             <ul class="flex flex-col gap-2.5 text-xs font-medium uppercase tracking-wide">
-              <li><a href="#/support" class="hover:text-[#f59e0b] transition">Quy chuẩn đóng gói</a></li>
-              <li><a href="#/shop" class="hover:text-[#f59e0b] transition">Vật tư đóng hàng</a></li>
-              <li><a href="#/support" class="hover:text-[#f59e0b] transition">Chính sách khiếu nại</a></li>
+              <li><a href="/support" class="hover:text-[#f59e0b] transition">Quy chuẩn đóng gói</a></li>
+              <li><a href="/shop" class="hover:text-[#f59e0b] transition">Vật tư đóng hàng</a></li>
+              <li><a href="/support" class="hover:text-[#f59e0b] transition">Chính sách khiếu nại</a></li>
             </ul>
           </div>
 

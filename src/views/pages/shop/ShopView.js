@@ -3,6 +3,11 @@ import shoppingBagIcon from "lucide-static/icons/shopping-bag.svg";
 import packageIcon from "lucide-static/icons/package.svg";
 import filterIcon from "lucide-static/icons/filter.svg";
 import searchIcon from "lucide-static/icons/search.svg";
+import {
+    ADMIN_PAGE_SIZE,
+    getPageItems,
+    getPaginationTemplate,
+} from "../admin/AdminPagination.js";
 
 const CATEGORY_LABELS = {
     BOXES: "HỘP CARTON",
@@ -30,12 +35,13 @@ export class ShopView extends BaseView {
     constructor() {
         super("#app-content");
         this.onAddToCart = null;
-        this.onBuyNow = null;
+        this.onProductSelect = null;
         this.onFilterChange = null;
         this.allProducts = [];
         this.searchTerm = "";
         this.selectedCategory = "Tất cả";
         this.sortBy = "none";
+        this.currentPage = 1;
         this.debounceTimer = null;
     }
 
@@ -91,10 +97,20 @@ export class ShopView extends BaseView {
             ? categories
             : this.getCategories(products);
         const visibleProducts = Array.isArray(products) ? products : [];
+        const totalPages = Math.ceil(visibleProducts.length / ADMIN_PAGE_SIZE);
+        this.currentPage = Math.min(
+            this.currentPage,
+            Math.max(totalPages, 1),
+        );
+        const pageProducts = getPageItems(
+            visibleProducts,
+            this.currentPage,
+            ADMIN_PAGE_SIZE,
+        );
 
         return /*html*/ `
-      <section class="max-w-7xl mx-auto px-4 py-8">
-        <div class="border-b-2 border-gray-900 pb-6 mb-8 flex flex-col xl:flex-row xl:items-end justify-between gap-5">
+      <section class="mx-auto w-full max-w-7xl px-4 py-8">
+        <div class="mb-8 flex flex-col gap-5 border-b-2 border-gray-900 pb-6 xl:flex-row xl:items-start xl:justify-between">
           <div class="border-l-4 border-[#b91c1c] pl-4">
             <span class="text-xs font-bold uppercase tracking-widest text-[#b91c1c]">Vật tư đóng gói bưu chính</span>
             <h1 class="text-3xl sm:text-4xl font-bold font-['Oswald'] text-gray-900 uppercase tracking-wide mt-0.5">
@@ -105,32 +121,46 @@ export class ShopView extends BaseView {
             </p>
           </div>
 
-          <div class="w-full xl:max-w-xl flex flex-col gap-3">
-            <div class="flex items-center gap-2 bg-white border-2 border-gray-900 px-3 py-2 shadow-[4px_4px_0px_0px_#f59e0b]">
-              <img src="${searchIcon}" class="w-4 h-4" alt="" />
+          <div class="flex w-full flex-col gap-3 border-2 border-gray-900 bg-white p-3 shadow-[4px_4px_0px_0px_#f59e0b] sm:p-4 xl:max-w-2xl">
+            <label for="shop-search" class="text-[11px] font-bold uppercase tracking-wider text-gray-700">
+              Tìm kiếm sản phẩm
+            </label>
+            <div class="flex items-center gap-2 border-2 border-gray-300 px-3 py-2 focus-within:border-gray-900">
+              <img src="${searchIcon}" class="h-4 w-4 shrink-0" alt="" />
               <input
                 id="shop-search"
-                type="text"
+                type="search"
                 value="${escapeHTML(searchValue)}"
-                placeholder="Tìm kiếm theo tên sản phẩm..."
-                class="w-full border-0 bg-transparent focus:outline-none text-sm text-gray-900 placeholder:text-gray-400"
+                placeholder="Nhập tên sản phẩm..."
+                class="w-full min-w-0 border-0 bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
               />
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-3">
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
+              <div class="flex flex-col gap-1.5">
+                <label for="shop-sort" class="text-[11px] font-bold uppercase tracking-wider text-gray-700">
+                  Sắp xếp theo giá
+                </label>
               <select
                 id="shop-sort"
-                class="w-full sm:w-48 border-2 border-gray-900 bg-white px-3 py-2 text-xs font-bold uppercase tracking-wider text-gray-900 focus:outline-none"
+                class="w-full border-2 border-gray-900 bg-white px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-900 focus:outline-none"
               >
                 <option value="none" ${sortBy === "none" ? "selected" : ""}>Mặc định</option>
                 <option value="asc" ${sortBy === "asc" ? "selected" : ""}>Giá tăng dần</option>
                 <option value="desc" ${sortBy === "desc" ? "selected" : ""}>Giá giảm dần</option>
               </select>
+              </div>
 
-              <div class="flex flex-wrap items-center gap-2">
+              <div class="flex min-w-0 flex-col gap-1.5">
+                <span class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-700">
+                  <img src="${filterIcon}" class="h-3.5 w-3.5" alt="" />
+                  Danh mục
+                </span>
+                <div class="flex flex-wrap gap-1.5">
                 <button
                   type="button"
-                  class="shop-category-btn ${selectedCategory === "Tất cả" ? "bg-gray-900 text-white" : "bg-white text-gray-700 border-2 border-gray-300"} text-[11px] font-['Oswald'] font-bold px-3 py-1.5 uppercase tracking-wider rounded-none transition"
+                  aria-pressed="${selectedCategory === "Tất cả"}"
+                  class="shop-category-btn ${selectedCategory === "Tất cả" ? "border-gray-900 bg-gray-900 text-white" : "border-gray-300 bg-white text-gray-700 hover:border-gray-900"} border-2 px-2.5 py-1.5 text-[10px] font-['Oswald'] font-bold uppercase tracking-wider transition sm:px-3 sm:text-[11px]"
                   data-shop-category="Tất cả"
                 >
                   Tất cả
@@ -142,7 +172,8 @@ export class ShopView extends BaseView {
                         return /*html*/ `
                       <button
                         type="button"
-                        class="shop-category-btn ${isActive ? "bg-gray-900 text-white" : "bg-white text-gray-700 border-2 border-gray-300"} text-[11px] font-['Oswald'] font-bold px-3 py-1.5 uppercase tracking-wider rounded-none transition"
+                        aria-pressed="${isActive}"
+                        class="shop-category-btn ${isActive ? "border-gray-900 bg-gray-900 text-white" : "border-gray-300 bg-white text-gray-700 hover:border-gray-900"} border-2 px-2.5 py-1.5 text-[10px] font-['Oswald'] font-bold uppercase tracking-wider transition sm:px-3 sm:text-[11px]"
                         data-shop-category="${escapeHTML(category)}"
                       >
                         ${escapeHTML(label)}
@@ -150,24 +181,35 @@ export class ShopView extends BaseView {
                     `;
                     })
                     .join("")}
+                </div>
               </div>
             </div>
+
+            <p class="border-t border-gray-200 pt-2 text-xs font-mono text-gray-600" aria-live="polite">
+              ${visibleProducts.length} sản phẩm phù hợp
+            </p>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- Danh sách sản phẩm -->
+        <div id="shop-product-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
           ${
               loading
                   ? /*html*/ `<p class="sm:col-span-2 lg:col-span-3 text-center text-sm text-gray-700">Đang tải sản phẩm...</p>`
                   : error
                     ? /*html*/ `<p role="alert" class="sm:col-span-2 lg:col-span-3 text-center text-sm text-red-700">${escapeHTML(error)}</p>`
-                    : visibleProducts.length
-                      ? visibleProducts
+                    : pageProducts.length
+                      ? pageProducts
                             .map((product) => this.#getProductTemplate(product))
                             .join("")
                       : /*html*/ `<p class="sm:col-span-2 lg:col-span-3 text-center text-sm text-gray-700">Không tìm thấy sản phẩm.</p>`
           }
         </div>
+
+        ${getPaginationTemplate(visibleProducts.length, this.currentPage, {
+            containerId: "shop-pagination",
+            ariaLabel: "Phân trang sản phẩm",
+        })}
 
         <div class="mt-12 p-6 bg-white border-2 border-gray-900 shadow-[4px_4px_0px_0px_#f59e0b] rounded-none flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -206,7 +248,12 @@ export class ShopView extends BaseView {
         }).format(product.price);
 
         return /*html*/ `
-      <div class="bg-white border-2 border-gray-900 shadow-[4px_4px_0px_0px_#0f172a] hover:shadow-[6px_6px_0px_0px_#b91c1c] hover:border-[#b91c1c] transition-all rounded-none flex flex-col justify-between p-4 group">
+      <article
+        tabindex="0"
+        aria-label="Xem chi tiết ${name}"
+        data-product-detail="${product.id}"
+        class="cursor-pointer rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#0f172a] transition-all hover:border-[#b91c1c] hover:shadow-[6px_6px_0px_0px_#b91c1c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b91c1c] group"
+      >
         <div>
           <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden border-2 border-gray-900">
             <img
@@ -247,15 +294,8 @@ export class ShopView extends BaseView {
             <span>Thêm vào giỏ hàng</span>
           </button>
 
-          <button
-            type="button"
-            data-shop-buy-now="${product.id}"
-            class="w-full bg-[#b91c1c] hover:bg-[#7f1d1d] text-white font-['Oswald'] font-bold text-xs uppercase tracking-wider py-2.5 px-4 flex items-center justify-center gap-2 transition cursor-pointer border-2 border-[#b91c1c] shadow-[2px_2px_0px_0px_#f59e0b] active:translate-x-0.5 active:translate-y-0.5 rounded-none"
-          >
-            <span>Mua ngay</span>
-          </button>
         </div>
-      </div>
+      </article>
     `;
     }
 
@@ -264,51 +304,47 @@ export class ShopView extends BaseView {
         const sortSelect = document.querySelector("#shop-sort");
         const categoryButtons = document.querySelectorAll(".shop-category-btn");
         const addButtons = document.querySelectorAll(".btn-add-to-cart");
-        const buyButtons = document.querySelectorAll("[data-shop-buy-now]");
+        const productGrid = document.querySelector("#shop-product-grid");
+        const pagination = document.querySelector("#shop-pagination");
+
+        const applyFilters = () => {
+            this.currentPage = 1;
+            this.onFilterChange?.({
+                searchTerm: this.searchTerm,
+                selectedCategory: this.selectedCategory,
+                sortBy: this.sortBy,
+            });
+        };
 
         searchInput?.addEventListener("input", (event) => {
             this.searchTerm = event.target.value.trim();
             clearTimeout(this.debounceTimer);
             this.debounceTimer = setTimeout(() => {
-                if (this.onFilterChange) {
-                    this.onFilterChange({
-                        searchTerm: this.searchTerm,
-                        selectedCategory: this.selectedCategory,
-                        sortBy: this.sortBy,
-                    });
-                }
+                const selectionStart = event.target.selectionStart;
+                applyFilters();
+                const updatedInput = document.querySelector("#shop-search");
+                updatedInput?.focus();
+                updatedInput?.setSelectionRange(selectionStart, selectionStart);
             }, 300);
         });
 
         sortSelect?.addEventListener("change", (event) => {
             this.sortBy = event.target.value;
-            if (this.onFilterChange) {
-                this.onFilterChange({
-                    searchTerm: this.searchTerm,
-                    selectedCategory: this.selectedCategory,
-                    sortBy: this.sortBy,
-                });
-            }
+            applyFilters();
         });
 
         categoryButtons.forEach((button) => {
             button.addEventListener("click", () => {
                 const category = button.dataset.shopCategory;
                 this.selectedCategory = category || "Tất cả";
-
-                if (this.onFilterChange) {
-                    this.onFilterChange({
-                        searchTerm: this.searchTerm,
-                        selectedCategory: this.selectedCategory,
-                        sortBy: this.sortBy,
-                    });
-                }
+                applyFilters();
             });
         });
 
         addButtons.forEach((btn) => {
             btn.addEventListener("click", async (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 const targetBtn = e.currentTarget;
                 const productData = {
                     id: Number(targetBtn.dataset.productId),
@@ -349,12 +385,39 @@ export class ShopView extends BaseView {
             });
         });
 
-        buyButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                if (this.onBuyNow) {
-                    this.onBuyNow(btn.dataset.shopBuyNow);
-                }
-            });
+        const openProduct = (productCard) => {
+            if (productCard && this.onProductSelect) {
+                this.onProductSelect(productCard.dataset.productDetail);
+            }
+        };
+
+        productGrid?.addEventListener("click", (event) => {
+            if (event.target.closest(".btn-add-to-cart")) return;
+            openProduct(event.target.closest("[data-product-detail]"));
+        });
+
+        productGrid?.addEventListener("keydown", (event) => {
+            if (
+                (event.key === "Enter" || event.key === " ") &&
+                event.target.matches("[data-product-detail]")
+            ) {
+                event.preventDefault();
+                openProduct(event.target);
+            }
+        });
+
+        pagination?.addEventListener("click", (event) => {
+            const button = event.target.closest("button[data-page]");
+            const page = Number(button?.dataset.page);
+            if (button && !button.disabled && page !== this.currentPage) {
+                this.currentPage = page;
+                this.onFilterChange?.({
+                    searchTerm: this.searchTerm,
+                    selectedCategory: this.selectedCategory,
+                    sortBy: this.sortBy,
+                    page,
+                });
+            }
         });
     }
 }

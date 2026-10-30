@@ -20,6 +20,7 @@ export class CartView extends BaseView {
     this.onUpdateQuantity = null;
     this.onRemove = null;
     this.onClear = null;
+    this.onCheckout = null;
   }
 
   getTemplate({
@@ -39,7 +40,7 @@ export class CartView extends BaseView {
               GIỎ HÀNG CỦA BẠN
             </h1>
           </div>
-          <a href="#/shop" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-700 hover:text-[#b91c1c] transition">
+          <a href="/shop" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-700 hover:text-[#b91c1c] transition">
             <img src="${arrowLeftIcon}" class="w-3.5 h-3.5" alt="" />
             Tiếp tục mua sắm
           </a>
@@ -74,7 +75,7 @@ export class CartView extends BaseView {
         <p class="text-sm text-gray-600 mt-2 max-w-md mx-auto">
           Bạn chưa chọn vật tư đóng gói nào. Hãy ghé cửa hàng để chọn thùng carton, bì thư, băng keo và nhiều hơn nữa.
         </p>
-        <a href="#/shop" class="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-[#b91c1c] hover:bg-[#991b1b] text-white font-['Oswald'] text-xs font-bold uppercase tracking-wider border-b-2 border-[#f59e0b] transition rounded-none">
+        <a href="/shop" class="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-[#b91c1c] hover:bg-[#991b1b] text-white font-['Oswald'] text-xs font-bold uppercase tracking-wider border-b-2 border-[#f59e0b] transition rounded-none">
           <img src="${packageIcon}" class="w-4 h-4 invert brightness-0" alt="" />
           Đến cửa hàng vật tư
         </a>
@@ -129,6 +130,13 @@ export class CartView extends BaseView {
           <p class="text-[11px] text-gray-500 mt-3">
             Phí vận chuyển (nếu có) sẽ được tính ở bước thanh toán.
           </p>
+          <button
+            type="button"
+            data-action="checkout"
+            class="mt-5 inline-flex w-full items-center justify-center gap-2 border-2 border-gray-900 bg-[#b91c1c] px-4 py-3 font-['Oswald'] text-sm font-bold uppercase tracking-wider text-white shadow-[3px_3px_0px_0px_#0f172a] transition hover:-translate-y-0.5 hover:bg-[#991b1b]"
+          >
+            Tiến hành thanh toán
+          </button>
         </aside>
 
       </div>
@@ -225,7 +233,8 @@ export class CartView extends BaseView {
     if (!root) return;
 
     root.querySelectorAll('[data-action="increase"]').forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (event) => {
+        event.preventDefault();
         const id = btn.dataset.id;
         const input = root.querySelector(
           `input[data-action="quantity"][data-id="${id}"]`,
@@ -236,7 +245,8 @@ export class CartView extends BaseView {
     });
 
     root.querySelectorAll('[data-action="decrease"]').forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (event) => {
+        event.preventDefault();
         const id = btn.dataset.id;
         const input = root.querySelector(
           `input[data-action="quantity"][data-id="${id}"]`,
@@ -247,7 +257,8 @@ export class CartView extends BaseView {
     });
 
     root.querySelectorAll('input[data-action="quantity"]').forEach((input) => {
-      input.addEventListener("change", () => {
+      input.addEventListener("change", (event) => {
+        event.preventDefault();
         const parsed = Math.floor(Number(input.value));
         const safe = Number.isFinite(parsed) && parsed >= 1 ? parsed : 1;
         this.onUpdateQuantity?.(input.dataset.id, safe);
@@ -255,15 +266,26 @@ export class CartView extends BaseView {
     });
 
     root.querySelectorAll('[data-action="remove"]').forEach((btn) => {
-      btn.addEventListener("click", () => this.onRemove?.(btn.dataset.id));
+      btn.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.onRemove?.(btn.dataset.id);
+      });
     });
 
     root
       .querySelector('[data-action="clear"]')
-      ?.addEventListener("click", () => {
+      ?.addEventListener("click", (event) => {
+        event.preventDefault();
         if (window.confirm("Bạn có chắc muốn xóa toàn bộ giỏ hàng?")) {
           this.onClear?.();
         }
+      });
+
+    root
+      .querySelector('[data-action="checkout"]')
+      ?.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.onCheckout?.();
       });
   }
 

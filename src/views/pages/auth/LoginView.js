@@ -78,7 +78,7 @@ export class LoginView extends BaseView {
 
           <div class="mt-6 pt-4 border-t-2 border-gray-100 text-center text-xs text-gray-600">
             Chưa có tài khoản thành viên?
-            <a href="#/register" class="font-bold text-[#b91c1c] uppercase hover:underline ml-1 inline-flex items-center gap-0.5">
+            <a href="/register" class="font-bold text-[#b91c1c] uppercase hover:underline ml-1 inline-flex items-center gap-0.5">
               Đăng ký ngay <img src="${arrowRightIcon}" class="w-3 h-3 text-[#b91c1c]" alt="" />
             </a>
           </div>

@@ -14,31 +14,31 @@ export class AdminSidebar {
         id: "dashboard",
         label: "Tổng quan",
         icon: layoutDashboardIcon,
-        link: "#/admin",
+        link: "/admin",
       },
       {
         id: "shipments",
         label: "Quản lý Vận đơn",
         icon: packageIcon,
-        link: "#/admin/shipments",
+        link: "/admin/shipments",
       },
       {
         id: "locations",
         label: "Mạng lưới Bưu cục",
         icon: mapPinIcon,
-        link: "#/admin/locations",
+        link: "/admin/locations",
       },
       {
         id: "rates",
         label: "Cấu hình Bảng cước",
         icon: calculatorIcon,
-        link: "#/admin/rates",
+        link: "/admin/rates",
       },
       {
         id: "products",
         label: "Kho Vật tư Shop",
         icon: shoppingBagIcon,
-        link: "#/admin/products",
+        link: "/admin/products",
       },
     ];
 
@@ -88,7 +88,7 @@ export class AdminSidebar {
 
 
         <div class="p-4 border-t-2 border-gray-900 bg-[#0b1120]">
-          <a href="#/" class="flex items-center justify-center gap-2 w-full py-2.5 px-3 border border-gray-700 hover:border-[#b91c1c] text-xs font-bold uppercase text-gray-300 hover:text-white hover:bg-[#b91c1c] transition rounded-none">
+          <a href="/" class="flex items-center justify-center gap-2 w-full py-2.5 px-3 border border-gray-700 hover:border-[#b91c1c] text-xs font-bold uppercase text-gray-300 hover:text-white hover:bg-[#b91c1c] transition rounded-none">
             <img src="${logOutIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
             <span>Về Trang chủ</span>
           </a>
@@ -131,7 +131,7 @@ export class AdminSidebar {
             ${navigation}
           </div>
           <div class="border-t-2 border-gray-900 bg-[#0b1120] p-4">
-            <a href="#/" class="flex w-full items-center justify-center gap-2 rounded-none border border-gray-700 px-3 py-2.5 text-xs font-bold uppercase text-gray-300 transition hover:border-[#b91c1c] hover:bg-[#b91c1c] hover:text-white">
+            <a href="/" class="flex w-full items-center justify-center gap-2 rounded-none border border-gray-700 px-3 py-2.5 text-xs font-bold uppercase text-gray-300 transition hover:border-[#b91c1c] hover:bg-[#b91c1c] hover:text-white">
               <img src="${logOutIcon}" class="h-3.5 w-3.5 invert brightness-0" alt="" />
               <span>Về Trang chủ</span>
             </a>

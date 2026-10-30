@@ -17,7 +17,7 @@ export class Header {
         <div class="max-w-7xl mx-auto px-3.5 sm:px-4 h-16 sm:h-18 flex items-center justify-between">
 
 
-          <a href="#/" class="flex items-center gap-1.5 sm:gap-2">
+          <a href="/" class="flex items-center gap-1.5 sm:gap-2">
             <div class="bg-[#b91c1c] p-1.5 sm:p-2 text-white flex items-center justify-center">
               <img src="${truckIcon}" alt="Logo" class="w-5 h-5 sm:w-6 sm:h-6 invert brightness-0" />
             </div>
@@ -29,10 +29,10 @@ export class Header {
 
           <!-- Menu điều hướng chính -->
           <nav class="hidden md:flex items-center gap-1 font-semibold text-sm">
-            <a href="#/" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Trang chủ</a>
-            <a href="#/calculate-rates" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Tính cước</a>
-            <a href="#/locate-us" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Bưu cục</a>
-            <a href="#/shop" class="px-3.5 py-2 text-[#b91c1c] font-bold border border-[#b91c1c] hover:bg-[#b91c1c] hover:text-white transition uppercase tracking-wide ml-2">
+            <a href="/" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Trang chủ</a>
+            <a href="/calculate-rates" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Tính cước</a>
+            <a href="/locate-us" class="px-3.5 py-2 text-gray-800 hover:text-[#b91c1c] hover:bg-red-50/50 transition uppercase tracking-wide">Bưu cục</a>
+            <a href="/shop" class="px-3.5 py-2 text-[#b91c1c] font-bold border border-[#b91c1c] hover:bg-[#b91c1c] hover:text-white transition uppercase tracking-wide ml-2">
               Cửa hàng Vật tư
             </a>
           </nav>
@@ -40,11 +40,11 @@ export class Header {
 
           <!-- Giỏ hàng, đăng nhập và nút mở menu mobile -->
           <div class="flex items-center gap-2">
-            <a href="#/cart" aria-label="Giỏ hàng" class="relative p-2 border-2 border-gray-900 hover:border-[#b91c1c] transition">
+            <a href="/cart" aria-label="Giỏ hàng" class="relative p-2 border-2 border-gray-900 hover:border-[#b91c1c] transition">
               <img src="${shoppingCartIcon}" class="w-5 h-5" alt="" />
               <span data-role="cart-count" class="absolute -top-2 -right-2 min-w-5 h-5 px-1 bg-[#b91c1c] text-white text-[10px] font-bold flex items-center justify-center">0</span>
             </a>
-            <a href="#${accountRoute}" aria-label="${accountLabel}" class="flex items-center gap-1.5 border-b-2 border-[#f59e0b] bg-[#b91c1c] px-2.5 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-[#991b1b] sm:px-5 sm:py-2.5 sm:text-xs">
+            <a href="${accountRoute}" aria-label="${accountLabel}" class="flex items-center gap-1.5 border-b-2 border-[#f59e0b] bg-[#b91c1c] px-2.5 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-[#991b1b] sm:px-5 sm:py-2.5 sm:text-xs">
               <img src="${userIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
               <span class="hidden sm:inline">${accountLabel}</span>
             </a>
@@ -64,10 +64,10 @@ export class Header {
 
         <!-- Menu điều hướng trên thiết bị di động -->
         <div id="mobile-menu-drawer" class="hidden md:hidden border-t-2 border-gray-900 bg-white px-4 py-3 flex flex-col gap-2 font-['Oswald'] uppercase text-xs tracking-wider border-b-2 border-[#b91c1c]">
-          <a href="#/" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Trang chủ</a>
-          <a href="#/calculate-rates" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Tính cước vận chuyển</a>
-          <a href="#/locate-us" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Mạng lưới bưu cục</a>
-          <a href="#/shop" class="py-2 px-3 bg-[#b91c1c] text-white font-bold text-center mt-1">Cửa hàng Vật tư</a>
+          <a href="/" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Trang chủ</a>
+          <a href="/calculate-rates" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Tính cước vận chuyển</a>
+          <a href="/locate-us" class="py-2 px-3 border-b border-gray-100 hover:bg-red-50 hover:text-[#b91c1c]">Mạng lưới bưu cục</a>
+          <a href="/shop" class="py-2 px-3 bg-[#b91c1c] text-white font-bold text-center mt-1">Cửa hàng Vật tư</a>
         </div>
       </header>
     `;
