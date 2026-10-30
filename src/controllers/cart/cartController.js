@@ -14,47 +14,38 @@ export class CartController extends BaseController {
   async init() {
     Layout.render(true);
 
-    this.view.onUpdateQuantity = async (id, quantity) => {
-      try {
-        await this.service.updateQuantity(id, quantity);
-        const item = this.service
-          .getItems()
-          .find((cartItem) => cartItem.id === Number(id));
-        if (
-          !item ||
-          !this.view.updateItem(
-            item,
-            this.service.getTotalQuantity(),
-            this.service.getTotalPrice(),
-          )
-        ) {
-          this.refresh();
-        }
-      } catch (error) {
-        console.error("[CartController Error]: Không cập nhật được giỏ hàng:", error);
-        this.refresh("Không thể cập nhật giỏ hàng. Vui lòng thử lại.");
-      }
-    };
+    this.view.onUpdateQuantity = (id, quantity) =>
+      this.#runCartAction(
+        () => this.service.updateQuantity(id, quantity),
+        "Không thể cập nhật giỏ hàng.",
+        () => {
+          const item = this.service
+            .getItems()
+            .find((cartItem) => cartItem.id === Number(id));
+          if (
+            !item ||
+            !this.view.updateItem(
+              item,
+              this.service.getTotalQuantity(),
+              this.service.getTotalPrice(),
+            )
+          ) {
+            this.refresh();
+          }
+        },
+      );
 
-    this.view.onRemove = async (id) => {
-      try {
-        await this.service.removeItem(id);
-        this.refresh();
-      } catch (error) {
-        console.error("[CartController Error]: Không xóa được sản phẩm:", error);
-        this.refresh("Không thể xóa sản phẩm. Vui lòng thử lại.");
-      }
-    };
+    this.view.onRemove = (id) =>
+      this.#runCartAction(
+        () => this.service.removeItem(id),
+        "Không thể xóa sản phẩm.",
+      );
 
-    this.view.onClear = async () => {
-      try {
-        await this.service.clear();
-        this.refresh();
-      } catch (error) {
-        console.error("[CartController Error]: Không thể xóa giỏ hàng:", error);
-        this.refresh("Không thể xóa giỏ hàng. Vui lòng thử lại.");
-      }
-    };
+    this.view.onClear = () =>
+      this.#runCartAction(
+        () => this.service.clear(),
+        "Không thể xóa giỏ hàng.",
+      );
 
     try {
       const products = await this.productService.getProducts();
@@ -75,5 +66,15 @@ export class CartController extends BaseController {
       totalPrice: this.service.getTotalPrice(),
       error,
     });
+  }
+
+  async #runCartAction(action, fallbackMessage, onSuccess = () => this.refresh()) {
+    try {
+      await action();
+      onSuccess();
+    } catch (error) {
+      console.error("[CartController Error]:", error);
+      this.refresh(error.message || `${fallbackMessage} Vui lòng thử lại.`);
+    }
   }
 }
