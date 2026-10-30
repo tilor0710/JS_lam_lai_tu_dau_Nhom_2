@@ -2,9 +2,15 @@ import truckIcon from "lucide-static/icons/truck.svg";
 import userIcon from "lucide-static/icons/user.svg";
 import menuIcon from "lucide-static/icons/menu.svg";
 import shoppingCartIcon from "lucide-static/icons/shopping-cart.svg";
+import { AuthService } from "../../services/AuthService.js";
 
 export class Header {
   static getTemplate() {
+    const accountRoute = AuthService.getAccountRoute();
+    const accountLabel = AuthService.isAuthenticated()
+      ? "Tài khoản"
+      : "Đăng nhập";
+
     return /*html*/ `
       <!-- Header chính: logo và điều hướng -->
       <header class="bg-white border-b-2 border-[#b91c1c] sticky top-0 z-50 shadow-sm">
@@ -38,9 +44,9 @@ export class Header {
               <img src="${shoppingCartIcon}" class="w-5 h-5" alt="" />
               <span data-role="cart-count" class="absolute -top-2 -right-2 min-w-5 h-5 px-1 bg-[#b91c1c] text-white text-[10px] font-bold flex items-center justify-center">0</span>
             </a>
-            <a href="#/auth" class="bg-[#b91c1c] hover:bg-[#991b1b] text-white px-3.5 sm:px-5 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider border-b-2 border-[#f59e0b] flex items-center gap-1.5 transition">
+            <a href="#${accountRoute}" aria-label="${accountLabel}" class="flex items-center gap-1.5 border-b-2 border-[#f59e0b] bg-[#b91c1c] px-2.5 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-[#991b1b] sm:px-5 sm:py-2.5 sm:text-xs">
               <img src="${userIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
-              <span class="hidden xs:inline">Đăng nhập</span>
+              <span class="hidden sm:inline">${accountLabel}</span>
             </a>
 
 

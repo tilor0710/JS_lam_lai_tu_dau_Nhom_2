@@ -18,21 +18,21 @@ export class AdminDashboardView extends BaseView {
     } = data;
 
     return /*html*/ `
-      <div class="flex flex-col gap-8">
+      <div class="flex min-w-0 flex-col gap-5 sm:gap-8">
 
 
         <div class="border-l-4 border-[#b91c1c] pl-4">
           <span class="text-xs font-bold uppercase tracking-widest text-[#b91c1c]">Giám sát hoạt động</span>
-          <h1 class="text-3xl font-bold font-['Oswald'] text-gray-900 uppercase tracking-wide mt-0.5">
+          <h1 class="mt-0.5 text-2xl font-bold font-['Oswald'] uppercase tracking-wide text-gray-900 sm:text-3xl">
             TỔNG QUAN HỆ THỐNG
           </h1>
         </div>
 
 
         <!-- Thống kê hoạt động hệ thống -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
 
-          <div class="bg-white border-2 border-gray-900 p-5 shadow-[4px_4px_0px_0px_#0f172a] rounded-none flex items-center justify-between">
+          <div class="flex items-center justify-between rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#0f172a] sm:p-5">
             <div>
               <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500">Vận Đơn Hoạt Động</span>
               <div class="text-3xl font-['Oswald'] font-extrabold text-[#b91c1c] mt-1">${totalShipments}</div>
@@ -43,7 +43,7 @@ export class AdminDashboardView extends BaseView {
             </div>
           </div>
 
-          <div class="bg-white border-2 border-gray-900 p-5 shadow-[4px_4px_0px_0px_#0f172a] rounded-none flex items-center justify-between">
+          <div class="flex items-center justify-between rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#0f172a] sm:p-5">
             <div>
               <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500">Điểm Bưu Cục</span>
               <div class="text-3xl font-['Oswald'] font-extrabold text-gray-900 mt-1">${totalLocations}</div>
@@ -54,7 +54,7 @@ export class AdminDashboardView extends BaseView {
             </div>
           </div>
 
-          <div class="bg-white border-2 border-gray-900 p-5 shadow-[4px_4px_0px_0px_#0f172a] rounded-none flex items-center justify-between">
+          <div class="flex items-center justify-between rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#0f172a] sm:p-5">
             <div>
               <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500">Mặt Hàng Vật Tư</span>
               <div class="text-3xl font-['Oswald'] font-extrabold text-gray-900 mt-1">${totalProducts}</div>
@@ -65,7 +65,7 @@ export class AdminDashboardView extends BaseView {
             </div>
           </div>
 
-          <div class="bg-[#0f172a] text-white border-2 border-gray-900 p-5 shadow-[4px_4px_0px_0px_#f59e0b] rounded-none flex items-center justify-between">
+          <div class="flex items-center justify-between rounded-none border-2 border-gray-900 bg-[#0f172a] p-4 text-white shadow-[4px_4px_0px_0px_#f59e0b] sm:p-5">
             <div>
               <span class="text-[11px] font-bold uppercase tracking-wider text-[#f59e0b]">Doanh Thu Ước Tính</span>
               <div class="text-2xl font-['Oswald'] font-extrabold text-white mt-1">130.000 ₫</div>
@@ -80,7 +80,7 @@ export class AdminDashboardView extends BaseView {
 
 
         <!-- Bảng vận đơn gần đây -->
-        <div class="bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_#0f172a] rounded-none p-6">
+        <div class="rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#0f172a] sm:p-6 sm:shadow-[6px_6px_0px_0px_#0f172a]">
           <div class="flex justify-between items-center border-b-2 border-gray-200 pb-4 mb-4">
             <div>
               <h2 class="font-['Oswald'] font-bold text-xl uppercase tracking-wider text-gray-900">

@@ -11,16 +11,16 @@ export class AdminRatesView extends BaseView {
     const pkg = rates.packages || {};
 
     return /*html*/ `
-      <div class="max-w-4xl flex flex-col gap-6">
+      <div class="flex w-full min-w-0 max-w-4xl flex-col gap-4 sm:gap-6">
 
         <div class="border-l-4 border-[#b91c1c] pl-4">
           <span class="text-xs font-bold uppercase tracking-widest text-[#b91c1c]">Thiết lập chi phí</span>
-          <h1 class="text-3xl font-bold font-['Oswald'] text-gray-900 uppercase mt-0.5">CẤU HÌNH BIỂU PHÍ BƯU CHÍNH</h1>
+          <h1 class="mt-0.5 text-2xl font-bold font-['Oswald'] uppercase text-gray-900 sm:text-3xl">CẤU HÌNH BIỂU PHÍ BƯU CHÍNH</h1>
           <p class="text-xs text-gray-500 mt-1">Các thay đổi sẽ được áp dụng trực tiếp cho Form tính cước phía khách hàng.</p>
         </div>
 
         <!-- Form cấu hình các mức cước -->
-        <div class="bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_#f59e0b] p-6 rounded-none">
+        <div class="rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#f59e0b] sm:p-6 sm:shadow-[6px_6px_0px_0px_#f59e0b]">
           <form id="form-rates-config" class="flex flex-col gap-6 text-xs font-bold uppercase tracking-wider text-gray-700">
 
 

@@ -87,12 +87,95 @@
         "height": 1
       },
       "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&auto=format&fit=crop"
+    },
+    {
+      "id": 7,
+      "name": "Thùng Carton Size M (35x25x15 cm)",
+      "category": "BOXES",
+      "price": 24000,
+      "stock": 260,
+      "dimensions": {
+        "length": 35,
+        "width": 25,
+        "height": 15
+      },
+      "image": "https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=400&auto=format&fit=crop"
+    },
+    {
+      "id": 8,
+      "name": "Thùng Carton 5 lớp Size XL (60x40x40 cm)",
+      "category": "BOXES",
+      "price": 52000,
+      "stock": 140,
+      "dimensions": {
+        "length": 60,
+        "width": 40,
+        "height": 40
+      },
+      "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&auto=format&fit=crop"
+    },
+    {
+      "id": 9,
+      "name": "Bì thư giấy kraft chống nước (26x35 cm)",
+      "category": "ENVELOPES",
+      "price": 9000,
+      "stock": 750,
+      "dimensions": {
+        "length": 35,
+        "width": 26,
+        "height": 1
+      },
+      "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&auto=format&fit=crop"
+    },
+    {
+      "id": 10,
+      "name": "Tấm xốp hơi chống sốc (1m x 10m)",
+      "category": "PROTECTION",
+      "price": 32000,
+      "stock": 240,
+      "dimensions": {
+        "length": 1000,
+        "width": 100,
+        "height": 1
+      },
+      "image": "https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=400&auto=format&fit=crop"
+    },
+    {
+      "id": 11,
+      "name": "Băng keo đóng gói trong suốt (48mm x 100y)",
+      "category": "TAPES",
+      "price": 18000,
+      "stock": 600,
+      "dimensions": {
+        "length": 10,
+        "width": 10,
+        "height": 5
+      },
+      "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&auto=format&fit=crop"
+    },
+    {
+      "id": 12,
+      "name": "Túi niêm phong PE size lớn (35x50 cm)",
+      "category": "BAGS",
+      "price": 55000,
+      "stock": 420,
+      "dimensions": {
+        "length": 50,
+        "width": 35,
+        "height": 1
+      },
+      "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&auto=format&fit=crop"
     }
   ],
   "carts": [
     {
       "id": 1,
-      "items": []
+      "items": [
+        {
+          "productId": 2,
+          "quantity": 1
+        }
+      ]
     }
   ],
   "shipments": [

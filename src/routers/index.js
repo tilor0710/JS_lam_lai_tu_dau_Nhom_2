@@ -3,6 +3,7 @@ import { HomeController } from "../controllers/home/HomeController.js";
 import { LocateController } from "../controllers/locate/LocateController.js";
 import { ShopController } from "../controllers/shop/ShopController.js";
 import { CalculateRatesController } from "../controllers/calculate/CalculateRatesController.js";
+import { CartController } from "../controllers/cart/cartController.js";
 import { AuthController } from "../controllers/auth/AuthController.js";
 import { UserDashboardController } from "../controllers/user/UserDashboardController.js";
 import { AdminDashboardController } from "../controllers/admin/AdminDashboardController.js";
@@ -29,6 +30,7 @@ export const initRouter = () => {
     .on("/locate-us", () => new LocateController().init())
     .on("/calculate-rates", () => new CalculateRatesController().init())
     .on("/shop", () => new ShopController().init())
+    .on("/cart", () => new CartController().init())
     .on("/auth", () => new AuthController("login").init())
     .on("/login", () => router.navigate("/auth"))
     .on("/register", () => new AuthController("register").init())

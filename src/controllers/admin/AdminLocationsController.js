@@ -2,6 +2,7 @@ import { BaseController } from "../../base/baseController.js";
 import { AdminLocationsView } from "../../views/pages/admin/AdminLocationsView.js";
 import { AdminLayout } from "../../views/layouts/admin/AdminLayout.js";
 import { LocationModel } from "../../models/LocationModel.js";
+import { ADMIN_PAGE_SIZE } from "../../views/pages/admin/AdminPagination.js";
 
 export class AdminLocationsController extends BaseController {
   constructor() {
@@ -11,16 +12,33 @@ export class AdminLocationsController extends BaseController {
   }
 
   async init() {
-    const renderPage = async () => {
-      const locations = await this.locationModel.getAll();
+    let locations = [];
+    const renderCurrentPage = () => {
       AdminLayout.render(this.view.getTemplate(locations), "locations");
       this.view.run();
     };
+    const renderPage = async (focusLocationId) => {
+      locations = await this.locationModel.getAll();
+      if (focusLocationId !== undefined) {
+        const index = locations.findIndex(
+          (location) => String(location.id) === String(focusLocationId),
+        );
+        if (index >= 0) {
+          this.view.currentPage = Math.floor(index / ADMIN_PAGE_SIZE) + 1;
+        }
+      }
+      renderCurrentPage();
+    };
+
+    this.view.onPageChange = (page) => {
+      this.view.currentPage = page;
+      renderCurrentPage();
+    };
 
     this.view.onCreateLocation = async (payload) => {
-      await this.locationModel.post(payload);
+      const location = await this.locationModel.post(payload);
       alert("Đã thêm bưu cục thành công vào mạng lưới!");
-      await renderPage();
+      await renderPage(location?.id);
     };
 
     this.view.onDeleteLocation = async (id) => {

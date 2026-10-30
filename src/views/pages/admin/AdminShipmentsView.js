@@ -3,25 +3,36 @@ import packageIcon from "lucide-static/icons/package.svg";
 import plusIcon from "lucide-static/icons/plus.svg";
 import truckIcon from "lucide-static/icons/truck.svg";
 import clockIcon from "lucide-static/icons/clock.svg";
+import {
+  ADMIN_PAGE_SIZE,
+  getPageItems,
+  getPaginationTemplate,
+} from "./AdminPagination.js";
 
 export class AdminShipmentsView extends BaseView {
   constructor() {
     super("#app-content");
     this.onCreateShipment = null;
     this.onAddEvent = null;
+    this.onPageChange = null;
+    this.currentPage = 1;
   }
 
   getTemplate(shipments = []) {
+    const totalPages = Math.ceil(shipments.length / ADMIN_PAGE_SIZE);
+    this.currentPage = Math.min(this.currentPage, Math.max(totalPages, 1));
+    const pageShipments = getPageItems(shipments, this.currentPage);
+
     return /*html*/ `
-      <div class="flex flex-col gap-6">
+      <div class="flex min-w-0 flex-col gap-4 sm:gap-6">
 
 
-        <div class="border-l-4 border-[#b91c1c] pl-4 flex justify-between items-end">
+        <div class="flex flex-col items-stretch justify-between gap-4 border-l-4 border-[#b91c1c] pl-3 sm:flex-row sm:items-end sm:pl-4">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-[#b91c1c]">Phân hệ bưu chính</span>
-            <h1 class="text-3xl font-bold font-['Oswald'] text-gray-900 uppercase mt-0.5">QUẢN LÝ VẬN ĐƠN</h1>
+            <h1 class="mt-0.5 text-2xl font-bold font-['Oswald'] uppercase text-gray-900 sm:text-3xl">QUẢN LÝ VẬN ĐƠN</h1>
           </div>
-          <button id="btn-toggle-create" class="bg-[#b91c1c] hover:bg-[#991b1b] text-white px-4 py-2.5 font-['Oswald'] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition rounded-none shadow-[2px_2px_0px_0px_#0f172a] cursor-pointer">
+          <button id="btn-toggle-create" class="flex w-full items-center justify-center gap-1.5 rounded-none bg-[#b91c1c] px-4 py-2.5 font-['Oswald'] text-xs font-bold uppercase tracking-wider text-white shadow-[2px_2px_0px_0px_#0f172a] transition hover:bg-[#991b1b] sm:w-auto">
             <img src="${plusIcon}" class="w-4 h-4 invert brightness-0" alt="" />
             <span>Tiếp nhận đơn tại quầy</span>
           </button>
@@ -29,7 +40,7 @@ export class AdminShipmentsView extends BaseView {
 
 
         <!-- Form tiếp nhận vận đơn tại quầy -->
-        <div id="create-shipment-panel" class="hidden bg-white border-2 border-gray-900 p-5 shadow-[4px_4px_0px_0px_#f59e0b] rounded-none">
+        <div id="create-shipment-panel" class="hidden rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#f59e0b] sm:p-5">
           <h3 class="font-['Oswald'] font-bold text-lg text-gray-900 uppercase mb-4 border-b border-gray-200 pb-2">
             Lập phiếu gửi hàng tại quầy
           </h3>
@@ -62,8 +73,8 @@ export class AdminShipmentsView extends BaseView {
 
 
         <!-- Danh sách vận đơn và thao tác cập nhật chặng -->
-        <div class="bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_#0f172a] rounded-none overflow-x-auto">
-          <table class="w-full text-left text-xs border-collapse">
+        <div class="min-w-0 overflow-x-auto rounded-none border-2 border-gray-900 bg-white shadow-[4px_4px_0px_0px_#0f172a] sm:shadow-[6px_6px_0px_0px_#0f172a]">
+          <table class="w-full min-w-[1000px] border-collapse text-left text-xs">
             <thead>
               <tr class="bg-gray-100 border-b-2 border-gray-900 font-['Oswald'] uppercase text-gray-800 tracking-wider">
                 <th class="p-3 border-r border-gray-300">Mã Vận Đơn</th>
@@ -76,7 +87,7 @@ export class AdminShipmentsView extends BaseView {
               </tr>
             </thead>
             <tbody class="divide-y border-b-2 border-gray-900 font-medium">
-              ${shipments
+              ${pageShipments
                 .map(
                   (s) => /*html*/ `
                 <tr class="hover:bg-red-50/30 transition">
@@ -108,12 +119,13 @@ export class AdminShipmentsView extends BaseView {
                 .join("")}
             </tbody>
           </table>
+          ${getPaginationTemplate(shipments.length, this.currentPage)}
         </div>
 
 
         <!-- Cửa sổ cập nhật hành trình vận đơn -->
-        <div id="modal-dispatch" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
-          <div class="bg-white border-2 border-gray-900 shadow-[8px_8px_0px_0px_#b91c1c] max-w-md w-full p-6 rounded-none">
+        <div id="modal-dispatch" class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto bg-slate-900/60 p-3 sm:p-4">
+          <div class="my-auto w-full max-w-md rounded-none border-2 border-gray-900 bg-white p-4 shadow-[8px_8px_0px_0px_#b91c1c] sm:p-6">
             <div class="border-b-2 border-gray-900 pb-3 mb-4 flex justify-between items-center">
               <h3 class="font-['Oswald'] font-bold text-xl uppercase text-gray-900">Bắn sự kiện hành trình</h3>
               <span id="modal-target-code" class="font-mono font-bold text-[#b91c1c] text-sm"></span>
@@ -147,6 +159,16 @@ export class AdminShipmentsView extends BaseView {
   }
 
   run() {
+    document
+      .querySelector("#admin-pagination")
+      ?.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-page]");
+        const page = Number(button?.dataset.page);
+        if (button && !button.disabled && page !== this.currentPage) {
+          this.onPageChange?.(page);
+        }
+      });
+
     const toggleBtn = document.querySelector("#btn-toggle-create");
     const panel = document.querySelector("#create-shipment-panel");
     const cancelBtn = document.querySelector("#btn-cancel-create");

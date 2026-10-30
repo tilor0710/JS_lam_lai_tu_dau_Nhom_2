@@ -94,4 +94,9 @@ export class AuthService {
     const user = this.getCurrentUser();
     return this.isAuthenticated() && user.role === "ADMIN";
   }
+
+  static getAccountRoute() {
+    if (!this.isAuthenticated()) return "/auth";
+    return this.isAdmin() ? "/admin" : "/user";
+  }
 }

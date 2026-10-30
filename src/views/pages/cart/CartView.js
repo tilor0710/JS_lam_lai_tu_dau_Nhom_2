@@ -29,7 +29,7 @@ export class CartView extends BaseView {
     error = "",
   } = {}) {
     return /*html*/ `
-      <section class="max-w-7xl mx-auto px-4 py-8">
+      <section class="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-8">
 
 
         <div class="border-b-2 border-gray-900 pb-6 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">

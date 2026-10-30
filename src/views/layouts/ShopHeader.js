@@ -1,9 +1,15 @@
 import shoppingBagIcon from "lucide-static/icons/shopping-bag.svg";
 import arrowLeftIcon from "lucide-static/icons/arrow-left.svg";
 import userIcon from "lucide-static/icons/user.svg";
+import { AuthService } from "../../services/AuthService.js";
 
 export class ShopHeader {
   static getTemplate() {
+    const accountRoute = AuthService.getAccountRoute();
+    const accountLabel = AuthService.isAuthenticated()
+      ? "Tài khoản"
+      : "Đăng nhập";
+
     return /*html*/ `
       <!-- Header cửa hàng: thương hiệu, giỏ hàng và tài khoản -->
       <header class="bg-white border-b-2 border-[#f59e0b] sticky top-0 z-50 shadow-sm">
@@ -22,16 +28,16 @@ export class ShopHeader {
 
           <div class="flex items-center gap-3">
 
-            <a href="#/cart" class="border border-gray-300 px-4 py-2 flex items-center gap-2 hover:border-[#b91c1c] transition text-sm font-bold text-gray-800">
+            <a href="#/cart" aria-label="Giỏ hàng" class="flex items-center gap-1.5 border border-gray-300 px-2.5 py-2 text-sm font-bold text-gray-800 transition hover:border-[#b91c1c] sm:gap-2 sm:px-4">
               <img src="${shoppingBagIcon}" class="w-4 h-4 text-gray-700" alt="" />
-              <span>Giỏ hàng</span>
+              <span class="hidden sm:inline">Giỏ hàng</span>
               <span data-role="cart-count" class="bg-[#b91c1c] text-white text-xs px-1.5 py-0.2 font-mono">0</span>
             </a>
 
 
-            <a href="#/auth" class="bg-[#b91c1c] hover:bg-[#991b1b] text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5">
+            <a href="#${accountRoute}" aria-label="${accountLabel}" class="flex items-center gap-1.5 bg-[#b91c1c] px-2.5 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-[#991b1b] sm:px-4">
               <img src="${userIcon}" class="w-3.5 h-3.5 invert brightness-0" alt="" />
-              <span>Tài khoản</span>
+              <span class="hidden sm:inline">${accountLabel}</span>
             </a>
           </div>
 

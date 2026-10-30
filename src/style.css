@@ -1,10 +1,23 @@
 @import "tailwindcss";
 
 @layer base {
+  html {
+    min-height: 100%;
+  }
+
   body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
     font-family: "Asap", sans-serif;
     color: #1e293b;
     background-color: #f8fafc;
+  }
+
+  #app-content {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
   }
 
   h1,

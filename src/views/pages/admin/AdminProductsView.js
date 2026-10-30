@@ -1,24 +1,35 @@
 import { BaseView } from "../../../base/baseView.js";
 import plusIcon from "lucide-static/icons/plus.svg";
 import trashIcon from "lucide-static/icons/trash.svg";
+import {
+  ADMIN_PAGE_SIZE,
+  getPageItems,
+  getPaginationTemplate,
+} from "./AdminPagination.js";
 
 export class AdminProductsView extends BaseView {
   constructor() {
     super("#app-content");
     this.onCreateProduct = null;
     this.onDeleteProduct = null;
+    this.onPageChange = null;
+    this.currentPage = 1;
   }
 
   getTemplate(products = []) {
-    return /*html*/ `
-      <div class="flex flex-col gap-6">
+    const totalPages = Math.ceil(products.length / ADMIN_PAGE_SIZE);
+    this.currentPage = Math.min(this.currentPage, Math.max(totalPages, 1));
+    const pageProducts = getPageItems(products, this.currentPage);
 
-        <div class="border-l-4 border-gray-900 pl-4 flex justify-between items-end">
+    return /*html*/ `
+      <div class="flex min-w-0 flex-col gap-4 sm:gap-6">
+
+        <div class="flex flex-col items-stretch justify-between gap-4 border-l-4 border-gray-900 pl-3 sm:flex-row sm:items-end sm:pl-4">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-[#b91c1c]">Quản trị kho hàng</span>
-            <h1 class="text-3xl font-bold font-['Oswald'] text-gray-900 uppercase mt-0.5">KHO VẬT TƯ ĐÓNG GÓI</h1>
+            <h1 class="mt-0.5 text-2xl font-bold font-['Oswald'] uppercase text-gray-900 sm:text-3xl">KHO VẬT TƯ ĐÓNG GÓI</h1>
           </div>
-          <button id="btn-toggle-prod" class="bg-gray-900 hover:bg-[#b91c1c] text-white px-4 py-2.5 font-['Oswald'] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition rounded-none cursor-pointer">
+          <button id="btn-toggle-prod" class="flex w-full items-center justify-center gap-1.5 rounded-none bg-gray-900 px-4 py-2.5 font-['Oswald'] text-xs font-bold uppercase tracking-wider text-white transition hover:bg-[#b91c1c] sm:w-auto">
             <img src="${plusIcon}" class="w-4 h-4 invert brightness-0" alt="" />
             <span>Thêm vật tư mới</span>
           </button>
@@ -26,7 +37,7 @@ export class AdminProductsView extends BaseView {
 
 
         <!-- Form thêm vật tư vào kho -->
-        <div id="create-prod-panel" class="hidden bg-white border-2 border-gray-900 p-5 shadow-[4px_4px_0px_0px_#f59e0b] rounded-none">
+        <div id="create-prod-panel" class="hidden rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#f59e0b] sm:p-5">
           <h3 class="font-['Oswald'] font-bold text-lg text-gray-900 uppercase mb-4 border-b border-gray-200 pb-2">
             Nhập vật tư đóng gói mới vào kho
           </h3>
@@ -66,8 +77,8 @@ export class AdminProductsView extends BaseView {
 
 
         <!-- Danh sách vật tư trong kho -->
-        <div class="bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_#0f172a] rounded-none overflow-x-auto">
-          <table class="w-full text-left text-xs border-collapse">
+        <div class="min-w-0 overflow-x-auto rounded-none border-2 border-gray-900 bg-white shadow-[4px_4px_0px_0px_#0f172a] sm:shadow-[6px_6px_0px_0px_#0f172a]">
+          <table class="w-full min-w-[720px] border-collapse text-left text-xs">
             <thead>
               <tr class="bg-gray-100 border-b-2 border-gray-900 font-['Oswald'] uppercase text-gray-800 tracking-wider">
                 <th class="p-3 border-r border-gray-300">Hình Ảnh</th>
@@ -79,7 +90,7 @@ export class AdminProductsView extends BaseView {
               </tr>
             </thead>
             <tbody class="divide-y border-b-2 border-gray-900 font-medium">
-              ${products
+              ${pageProducts
                 .map(
                   (p) => /*html*/ `
                 <tr class="hover:bg-slate-50 transition">
@@ -101,6 +112,7 @@ export class AdminProductsView extends BaseView {
                 .join("")}
             </tbody>
           </table>
+          ${getPaginationTemplate(products.length, this.currentPage)}
         </div>
 
       </div>
@@ -108,6 +120,16 @@ export class AdminProductsView extends BaseView {
   }
 
   run() {
+    document
+      .querySelector("#admin-pagination")
+      ?.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-page]");
+        const page = Number(button?.dataset.page);
+        if (button && !button.disabled && page !== this.currentPage) {
+          this.onPageChange?.(page);
+        }
+      });
+
     const toggle = document.querySelector("#btn-toggle-prod");
     const panel = document.querySelector("#create-prod-panel");
     const cancel = document.querySelector("#btn-cancel-prod");
