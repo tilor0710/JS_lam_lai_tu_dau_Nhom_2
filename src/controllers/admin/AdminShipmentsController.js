@@ -2,6 +2,7 @@ import { BaseController } from "../../base/baseController.js";
 import { AdminShipmentsView } from "../../views/pages/admin/AdminShipmentsView.js";
 import { AdminLayout } from "../../views/layouts/admin/AdminLayout.js";
 import { ShipmentModel } from "../../models/ShipmentModel.js";
+import { OrderModel } from "../../models/OrderModel.js";
 import { ADMIN_PAGE_SIZE } from "../../views/pages/admin/AdminPagination.js";
 import { Popup } from "../../components/Popup.js";
 
@@ -10,16 +11,51 @@ export class AdminShipmentsController extends BaseController {
     const view = new AdminShipmentsView();
     super(null, view, false);
     this.shipmentModel = new ShipmentModel();
+    this.orderModel = new OrderModel();
   }
 
   async init() {
     let shipments = [];
+    let orders = [];
     const renderCurrentPage = () => {
       AdminLayout.render(this.view.getTemplate(shipments), "shipments");
       this.view.run();
     };
     const renderPage = async (focusShipmentId) => {
-      shipments = await this.shipmentModel.getAll();
+      const [shipmentRecords, orderRecords] = await Promise.all([
+        this.shipmentModel.getAll(),
+        this.orderModel.getAll(),
+      ]);
+      if (!Array.isArray(shipmentRecords) || !Array.isArray(orderRecords)) {
+        throw new Error("Dữ liệu vận đơn hoặc đơn hàng không hợp lệ.");
+      }
+
+      orders = orderRecords.map((order) => ({
+        ...order,
+        id: `DH-${order.id}`,
+        sender:
+          order.customerName ||
+          order.email ||
+          (order.userId ? `Khách hàng #${order.userId}` : "Khách hàng"),
+        receiver: order.shippingAddress || "Chưa có địa chỉ giao hàng",
+        serviceType: "SHOP",
+        currentStatus: order.status || "PENDING",
+        recordType: "order",
+      }));
+      shipments = [
+        ...shipmentRecords.map((shipment) => ({
+          ...shipment,
+          recordType: "shipment",
+          createdAt:
+            shipment.createdAt || shipment.events?.[0]?.time || null,
+        })),
+        ...orders,
+      ].sort(
+        (first, second) =>
+          (Date.parse(second.createdAt) || 0) -
+          (Date.parse(first.createdAt) || 0),
+      );
+
       if (focusShipmentId !== undefined) {
         const index = shipments.findIndex(
           (shipment) => String(shipment.id) === String(focusShipmentId),

@@ -4,6 +4,18 @@ import mapPinIcon from "lucide-static/icons/map-pin.svg";
 import shoppingBagIcon from "lucide-static/icons/shopping-bag.svg";
 import dollarSignIcon from "lucide-static/icons/dollar-sign.svg";
 
+const escapeHTML = (value) =>
+  String(value ?? "").replace(/[&<>"']/g, (character) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return entities[character];
+  });
+
 export class AdminDashboardView extends BaseView {
   constructor() {
     super("#app-content");
@@ -15,6 +27,7 @@ export class AdminDashboardView extends BaseView {
       totalLocations = 7,
       totalProducts = 6,
       recentShipments = [],
+      totalRevenue = 0,
     } = data;
 
     return /*html*/ `
@@ -34,7 +47,7 @@ export class AdminDashboardView extends BaseView {
 
           <div class="flex items-center justify-between rounded-none border-2 border-gray-900 bg-white p-4 shadow-[4px_4px_0px_0px_#0f172a] sm:p-5">
             <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500">Vận Đơn Hoạt Động</span>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500">Đơn Hàng & Vận Đơn</span>
               <div class="text-3xl font-['Oswald'] font-extrabold text-[#b91c1c] mt-1">${totalShipments}</div>
               <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-wide mt-1 block">Toàn mạng lưới</span>
             </div>
@@ -67,9 +80,9 @@ export class AdminDashboardView extends BaseView {
 
           <div class="flex items-center justify-between rounded-none border-2 border-gray-900 bg-[#0f172a] p-4 text-white shadow-[4px_4px_0px_0px_#f59e0b] sm:p-5">
             <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-[#f59e0b]">Doanh Thu Ước Tính</span>
-              <div class="text-2xl font-['Oswald'] font-extrabold text-white mt-1">130.000 ₫</div>
-              <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wide mt-1 block">Cước phí & Shop</span>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#f59e0b]">Tổng Giá Trị Ghi Nhận</span>
+              <div class="text-2xl font-['Oswald'] font-extrabold text-white mt-1">${new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(totalRevenue)}</div>
+              <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wide mt-1 block">Cước phí & đơn hàng shop</span>
             </div>
             <div class="bg-slate-800 p-3 border border-slate-700">
               <img src="${dollarSignIcon}" class="w-6 h-6 invert brightness-0" alt="" />
@@ -84,9 +97,9 @@ export class AdminDashboardView extends BaseView {
           <div class="flex justify-between items-center border-b-2 border-gray-200 pb-4 mb-4">
             <div>
               <h2 class="font-['Oswald'] font-bold text-xl uppercase tracking-wider text-gray-900">
-                VẬN ĐƠN CẦN THEO DÕI GẦN NHẤT
+                ĐƠN HÀNG & VẬN ĐƠN GẦN NHẤT
               </h2>
-              <p class="text-xs text-gray-500 mt-0.5">Dữ liệu bưu gửi đọc trực tiếp từ db.json</p>
+              <p class="text-xs text-gray-500 mt-0.5">Đơn shop và vận đơn được cập nhật từ db.json</p>
             </div>
           </div>
 
@@ -94,33 +107,36 @@ export class AdminDashboardView extends BaseView {
             <table class="w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-gray-100 border-2 border-gray-900 font-['Oswald'] uppercase text-gray-800 tracking-wider">
-                  <th class="p-3 border-r border-gray-300">Mã Vận Đơn</th>
-                  <th class="p-3 border-r border-gray-300">Lộ Trình</th>
-                  <th class="p-3 border-r border-gray-300">Gói Dịch Vụ</th>
-                  <th class="p-3 border-r border-gray-300">Cước Phí</th>
+                  <th class="p-3 border-r border-gray-300">Mã Đơn / Vận Đơn</th>
+                  <th class="p-3 border-r border-gray-300">Khách Hàng ➔ Nơi Nhận</th>
+                  <th class="p-3 border-r border-gray-300">Loại Đơn</th>
+                  <th class="p-3 border-r border-gray-300">Tổng Tiền / Cước Phí</th>
                   <th class="p-3">Trạng Thái</th>
                 </tr>
               </thead>
               <tbody class="divide-y border-x-2 border-b-2 border-gray-900 font-medium">
                 ${recentShipments
                   .map(
-                    (s) => /*html*/ `
+                    (s) => {
+                      const isOrder = s.recordType === "order";
+                      return /*html*/ `
                   <tr class="hover:bg-red-50/40 transition">
-                    <td class="p-3 font-mono font-bold text-[#b91c1c]">${s.id}</td>
-                    <td class="p-3 text-gray-700">${s.sender} ➔ ${s.receiver}</td>
-                    <td class="p-3"><span class="bg-gray-100 text-gray-800 font-mono px-2 py-0.5 border border-gray-300 font-bold">${s.serviceType}</span></td>
-                    <td class="p-3 font-mono font-bold">${new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(s.shippingFee || 0)}</td>
+                    <td class="p-3 font-mono font-bold text-[#b91c1c]">${escapeHTML(s.id)}</td>
+                    <td class="p-3 text-gray-700">${escapeHTML(s.sender)} ➔ ${escapeHTML(s.receiver)}</td>
+                    <td class="p-3"><span class="bg-gray-100 text-gray-800 font-mono px-2 py-0.5 border border-gray-300 font-bold">${isOrder ? "ĐƠN SHOP" : escapeHTML(s.serviceType)}</span></td>
+                    <td class="p-3 font-mono font-bold">${new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(Number(isOrder ? s.totalAmount : s.shippingFee) || 0)}</td>
                     <td class="p-3">
                       <span class="text-[10px] font-bold uppercase px-2 py-0.5 border ${
                         s.currentStatus === "DELIVERED"
                           ? "bg-emerald-50 text-emerald-700 border-emerald-300"
                           : "bg-amber-50 text-amber-700 border-amber-300"
                       }">
-                        ${s.currentStatus}
+                        ${escapeHTML(s.currentStatus || "PENDING")}
                       </span>
                     </td>
                   </tr>
-                `,
+                `;
+                    },
                   )
                   .join("")}
               </tbody>

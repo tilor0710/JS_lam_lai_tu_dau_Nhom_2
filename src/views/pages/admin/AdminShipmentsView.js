@@ -10,6 +10,18 @@ import {
   getPaginationTemplate,
 } from "./AdminPagination.js";
 
+const escapeHTML = (value) =>
+  String(value ?? "").replace(/[&<>"']/g, (character) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return entities[character];
+  });
+
 export class AdminShipmentsView extends BaseView {
   constructor() {
     super("#app-content");
@@ -78,44 +90,52 @@ export class AdminShipmentsView extends BaseView {
           <table class="w-full min-w-[1000px] border-collapse text-left text-xs">
             <thead>
               <tr class="bg-gray-100 border-b-2 border-gray-900 font-['Oswald'] uppercase text-gray-800 tracking-wider">
-                <th class="p-3 border-r border-gray-300">Mã Vận Đơn</th>
-                <th class="p-3 border-r border-gray-300">Nơi Gửi ➔ Nơi Nhận</th>
-                <th class="p-3 border-r border-gray-300">Dịch Vụ</th>
-                <th class="p-3 border-r border-gray-300">Cước Phí</th>
+                <th class="p-3 border-r border-gray-300">Mã Đơn / Vận Đơn</th>
+                <th class="p-3 border-r border-gray-300">Khách Hàng ➔ Nơi Nhận</th>
+                <th class="p-3 border-r border-gray-300">Loại Đơn</th>
+                <th class="p-3 border-r border-gray-300">Tổng Tiền / Cước Phí</th>
                 <th class="p-3 border-r border-gray-300">Trạng Thái</th>
-                <th class="p-3 border-r border-gray-300">Số Mốc Hành Trình</th>
+                <th class="p-3 border-r border-gray-300">Sản Phẩm / Mốc Hành Trình</th>
                 <th class="p-3 text-center">Thao Tác</th>
               </tr>
             </thead>
             <tbody class="divide-y border-b-2 border-gray-900 font-medium">
               ${pageShipments
                 .map(
-                  (s) => /*html*/ `
+                  (s) => {
+                    const isOrder = s.recordType === "order";
+                    const itemCount = Array.isArray(s.items) ? s.items.length : 0;
+                    return /*html*/ `
                 <tr class="hover:bg-red-50/30 transition">
-                  <td class="p-3 font-mono font-bold text-[#b91c1c]">${s.id}</td>
-                  <td class="p-3 text-gray-700">${s.sender} ➔ ${s.receiver}</td>
-                  <td class="p-3"><span class="bg-gray-100 text-gray-800 font-mono px-2 py-0.5 border border-gray-300 font-bold">${s.serviceType}</span></td>
-                  <td class="p-3 font-mono font-bold">${new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(s.shippingFee || 0)}</td>
+                  <td class="p-3 font-mono font-bold text-[#b91c1c]">${escapeHTML(s.id)}</td>
+                  <td class="p-3 text-gray-700">${escapeHTML(s.sender)} ➔ ${escapeHTML(s.receiver)}</td>
+                  <td class="p-3"><span class="bg-gray-100 text-gray-800 font-mono px-2 py-0.5 border border-gray-300 font-bold">${isOrder ? "ĐƠN SHOP" : escapeHTML(s.serviceType)}</span></td>
+                  <td class="p-3 font-mono font-bold">${new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(Number(isOrder ? s.totalAmount : s.shippingFee) || 0)}</td>
                   <td class="p-3">
                     <span class="text-[10px] font-bold uppercase px-2 py-0.5 border ${
                       s.currentStatus === "DELIVERED"
                         ? "bg-emerald-50 text-emerald-700 border-emerald-300"
                         : "bg-amber-50 text-amber-700 border-amber-300"
                     }">
-                      ${s.currentStatus}
+                      ${escapeHTML(s.currentStatus || "PENDING")}
                     </span>
                   </td>
-                  <td class="p-3 font-mono">${(s.events || []).length} mốc</td>
+                  <td class="p-3 font-mono">${isOrder ? `${itemCount} sản phẩm` : `${(s.events || []).length} mốc`}</td>
                   <td class="p-3 text-center">
-                    <button
-                      data-id="${s.id}"
-                      class="btn-open-dispatch bg-gray-900 hover:bg-[#b91c1c] text-white px-3 py-1 font-['Oswald'] text-[11px] font-bold uppercase tracking-wider transition rounded-none cursor-pointer"
-                    >
-                      + Cập nhật chặng
-                    </button>
+                    ${
+                      isOrder
+                        ? '<span class="text-gray-500">Đơn hàng cửa hàng</span>'
+                        : `<button
+                            data-id="${escapeHTML(s.id)}"
+                            class="btn-open-dispatch bg-gray-900 hover:bg-[#b91c1c] text-white px-3 py-1 font-['Oswald'] text-[11px] font-bold uppercase tracking-wider transition rounded-none cursor-pointer"
+                          >
+                            + Cập nhật chặng
+                          </button>`
+                    }
                   </td>
                 </tr>
-              `,
+              `;
+                  },
                 )
                 .join("")}
             </tbody>

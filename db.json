@@ -15,6 +15,30 @@
       "phone": "123456789",
       "role": "USER",
       "id": 2
+    },
+    {
+      "email": "minh@gmail.com",
+      "password": "$2a$10$4ij76Cex7THsXJJaDPHz2.JQOpkk3ujl16HmXc4dOCuiPfeBcQby2",
+      "name": "hoang minh",
+      "phone": "12312441",
+      "role": "USER",
+      "id": 3
+    },
+    {
+      "email": "khang@gmail.com",
+      "password": "$2a$10$tEAq/RC.UhPNf.S6Qv1xeu10aY3cmr7vfPyU03y37ne5GWCan8zwq",
+      "name": "khang",
+      "phone": "12345",
+      "role": "USER",
+      "id": 4
+    },
+    {
+      "email": "kien@gmail.com",
+      "password": "$2a$10$R/XX8NavnGSoiDFvwjW.Oej/gxxbyKewxkrvmVPaq/VDrwvUfVWo.",
+      "name": "kien",
+      "phone": "123456789",
+      "role": "USER",
+      "id": 5
     }
   ],
   "products": [
@@ -23,7 +47,7 @@
       "name": "Thùng Carton 5 Lớp",
       "category": "BOXES",
       "price": 35000,
-      "stock": 150,
+      "stock": 149,
       "image": "https://images.unsplash.com/photo-1782405183431-893f08e24b1a?w=400",
       "description": "Thùng carton 5 lớp là loại bao bì giấy được cấu tạo từ 5 lớp giấy xếp chồng và liên kết chặt chẽ với nhau, gồm 3 lớp giấy phẳng (mặt ngoài, ở giữa, mặt đáy) và 2 lớp giấy sóng hình sin ở giữa.",
       "dimensions": {
@@ -37,7 +61,7 @@
       "name": "Thùng Carton 3 Lớp",
       "category": "BOXES",
       "price": 20000,
-      "stock": 200,
+      "stock": 198,
       "image": "https://images.unsplash.com/photo-1573376670329-0261ea9fde97?w=400",
       "description": "Thùng carton 3 lớp là loại bao bì được cấu tạo từ 3 lớp giấy bao gồm: hai lớp giấy bề mặt phẳng bên ngoài và một lớp sóng hình sin ở giữa. Đây là giải pháp đóng gói phổ biến nhất hiện nay nhờ chi phí rẻ, trọng lượng nhẹ và tính ứng dụng cao.",
       "dimensions": {
@@ -121,7 +145,7 @@
       "name": "Mút Xốp Chống Va Đập",
       "category": "PROTECTION",
       "price": 25000,
-      "stock": 120,
+      "stock": 119,
       "image": "https://m.media-amazon.com/images/I/81AJGxPvCmL._AC_SY300_SX300_QL70_ML2_.jpg?w=400",
       "description": "Mút xốp chống va đập là vật liệu đệm có độ đàn hồi cao, được thiết kế với cấu trúc bọt khí hoặc tế bào xốp để hấp thụ và phân tán lực tác động, giúp giảm chấn khi xảy ra va chạm hoặc rung lắc.",
       "dimensions": {
@@ -370,6 +394,55 @@
       ],
       "createdAt": "2026-10-30T14:01:29.565Z",
       "id": 2
+    },
+    {
+      "userId": null,
+      "customerName": "ádiojasod",
+      "phone": "123124124214",
+      "email": "ygtdyggasdyudyusa@gmail.com",
+      "shippingAddress": "89asuidhhiasd",
+      "note": "ọiahawe",
+      "paymentMethod": "COD",
+      "paymentStatus": "UNPAID",
+      "status": "PENDING",
+      "totalAmount": 25000,
+      "shippingFee": null,
+      "items": [
+        {
+          "productId": 8,
+          "quantity": 1,
+          "price": 25000
+        }
+      ],
+      "createdAt": "2026-10-31T02:06:40.858Z",
+      "id": 3
+    },
+    {
+      "userId": 5,
+      "customerName": "kien",
+      "phone": "123456789",
+      "email": "kien@gmail.com",
+      "shippingAddress": "ádasdádqweqweqwe",
+      "note": "sadasdqw",
+      "paymentMethod": "COD",
+      "paymentStatus": "UNPAID",
+      "status": "PENDING",
+      "totalAmount": 75000,
+      "shippingFee": null,
+      "items": [
+        {
+          "productId": 2,
+          "quantity": 2,
+          "price": 20000
+        },
+        {
+          "productId": 1,
+          "quantity": 1,
+          "price": 35000
+        }
+      ],
+      "createdAt": "2026-10-31T02:18:52.076Z",
+      "id": 4
     }
   ]
 }
